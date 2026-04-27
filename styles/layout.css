@@ -1,0 +1,5 @@
+.pg{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
+.logo{font-family:'Gmarket Sans',sans-serif;font-size:22px;font-weight:500;letter-spacing:-.4px}.logo em{font-style:normal;color:var(--primary)}.logo small{display:block;font-size:11px;color:var(--tx3);font-weight:300;margin-top:1px;font-family:'Noto Sans KR',sans-serif}
+.srow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:18px}.tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}.tbL{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+@media(max-width:640px){.hdr{flex-direction:column;align-items:flex-start}.srow{grid-template-columns:1fr 1fr}.tb{flex-direction:column;align-items:flex-start}.pg{padding:14px 10px 40px}}

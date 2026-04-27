@@ -1,943 +1,120 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>아이 시간표</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#F5F3EE;--sur:#FFF;--sur2:#EFECE6;--sur3:#E6E2DA;
-  --brd:rgba(0,0,0,.07);--brd2:rgba(0,0,0,.13);
-  --tx:#18160F;--tx2:#6A6760;--tx3:#9B9890;
-  --r:14px;--rsm:8px;--rxs:6px;
-  --sh:0 2px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
-  --shlg:0 8px 32px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
-  --c0:#6C5CE7;--c0l:#EDE8FF;--c0d:#4330CC;
-  --c1:#00A98F;--c1l:#D0F5EF;--c1d:#006B5A;
-  --c2:#E05B3A;--c2l:#FCDDD6;--c2d:#A83E24;
-  --c3:#C9348F;--c3l:#FAD9EF;--c3d:#8A2261;
-  --c4:#0875D4;--c4l:#D4EBFB;--c4d:#054E96;
-  --c5:#B8870A;--c5l:#FBF1CF;--c5d:#7A5A04;
-  --c6:#0F8A7A;--c6l:#C8F0EB;--c6d:#075A50;
-  --c7:#A8265C;--c7l:#F9D4E5;--c7d:#6E163C;
-  --c8:#2878BB;--c8l:#D4E9F9;--c8d:#185080;
-  --c9:#5E50C0;--c9l:#E4E0FF;--c9d:#3D3490;
-  --sc:#4A5568;--scl:#EDF0F5;--scd:#1E2A3D;
-}
-@media(prefers-color-scheme:dark){
-  :root{
-    --bg:#100F0E;--sur:#1A1918;--sur2:#222120;--sur3:#2C2A28;
-    --brd:rgba(255,255,255,.07);--brd2:rgba(255,255,255,.13);
-    --tx:#EEE9E0;--tx2:#9A9690;--tx3:#666360;
-    --sh:0 2px 12px rgba(0,0,0,.3);--shlg:0 8px 32px rgba(0,0,0,.45);
-    --scl:#1C2430;--scd:#8FA3BC;
-  }
-}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-.pg{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
-
-/* ─── Header ─── */
-.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
-.logo{font-family:'Gmarket Sans',sans-serif;font-size:22px;font-weight:500;letter-spacing:-.4px}
-.logo em{font-style:normal;color:var(--c0)}
-.logo small{display:block;font-size:11px;color:var(--tx3);font-weight:300;margin-top:1px;font-family:'Noto Sans KR',sans-serif}
-.ctabs{display:flex;gap:6px}
-.ctab{display:flex;align-items:center;gap:5px;padding:7px 16px;border-radius:40px;border:1.5px solid var(--brd2);background:var(--sur);cursor:pointer;font-size:13px;font-weight:500;font-family:'Noto Sans KR',sans-serif;color:var(--tx2);transition:all .2s cubic-bezier(.34,1.56,.64,1)}
-.ctab:hover{transform:translateY(-1px);box-shadow:var(--sh)}
-.ctab.on{background:var(--tx);color:#fff;border-color:var(--tx)}
-.ctab .av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;background:var(--c0l);color:var(--c0d)}
-.ctab.on .av{background:rgba(255,255,255,.22);color:#fff}
-
-/* ─── Stats ─── */
-.srow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:18px}
-.sc{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:12px 15px;box-shadow:var(--sh);transition:transform .18s}
-.sc:hover{transform:translateY(-2px)}
-.slbl{font-size:10px;color:var(--tx3);letter-spacing:.3px;margin-bottom:3px;text-transform:uppercase}
-.sval{font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:500;line-height:1.1}
-.vp{color:var(--c0)}.vt{color:var(--c1)}.vo{color:var(--c2)}.vb{color:var(--c4)}
-
-/* ─── Toolbar ─── */
-.tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}
-.tbL{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.tabset{display:flex;background:var(--sur);border:1px solid var(--brd);border-radius:9px;padding:3px;gap:2px}
-.tabbtn{padding:5px 13px;border-radius:6px;border:none;background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;transition:all .16s}
-.tabbtn.on{background:var(--tx);color:#fff}
-.addbtn{display:flex;align-items:center;gap:4px;padding:7px 15px;border-radius:9px;border:1.5px solid var(--c0);background:var(--c0l);color:var(--c0d);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s}
-.addbtn:hover{background:var(--c0);color:#fff}
-
-/* ─── Modal overlay ─── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .22s}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--sur);border-radius:18px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22);transform:translateY(16px) scale(.97);transition:transform .25s cubic-bezier(.34,1.2,.64,1),opacity .22s;opacity:0}
-.overlay.open .modal{transform:none;opacity:1}
-.mhdr{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 0}
-.mtitle{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
-.mbadge{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:500}
-.ba{background:var(--c0l);color:var(--c0d)}.bs{background:var(--scl);color:var(--scd)}
-.mclose{width:28px;height:28px;border-radius:50%;border:none;background:var(--sur2);color:var(--tx2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.mclose:hover{background:var(--sur3)}
-.mbody{padding:18px 22px 22px;display:flex;flex-direction:column;gap:16px}
-
-/* ─── Form elements ─── */
-.fgroup{display:flex;flex-direction:column;gap:5px}
-.fgroup label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px;font-weight:500}
-.fgroup input,.fgroup select{width:100%;padding:9px 11px;border:1.5px solid var(--brd2);border-radius:var(--rsm);font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--bg);color:var(--tx);transition:border-color .14s,box-shadow .14s;-webkit-appearance:none}
-.fgroup input:focus,.fgroup select:focus{outline:none;border-color:var(--c0);box-shadow:0 0 0 3px rgba(108,92,231,.12)}
-.fgroup input::placeholder{color:var(--tx3)}
-.frow{display:grid;gap:10px}
-.fcols2{grid-template-columns:1fr 1fr}
-.fcols3{grid-template-columns:1fr 1fr 1fr}
-.fcols4{grid-template-columns:1fr 1fr 1fr 1fr}
-
-/* time picker */
-.tpick{display:flex;align-items:center;gap:4px}
-.tpick select{flex:1;min-width:0}
-.tsep{font-size:14px;font-weight:700;color:var(--tx3);flex-shrink:0}
-
-/* subjects panel inside academy modal */
-.subj-panel{background:var(--sur2);border-radius:10px;padding:14px}
-.subj-panel-title{font-size:11px;font-weight:500;color:var(--tx2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.subj-list{display:flex;flex-direction:column;gap:8px}
-.subj-item{background:var(--sur);border:1px solid var(--brd2);border-radius:var(--rsm);padding:10px 12px;position:relative}
-.subj-item-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.subj-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.subj-name-disp{font-size:13px;font-weight:600;flex:1}
-.subj-del{padding:2px 8px;border-radius:5px;border:1px solid var(--brd2);background:transparent;font-size:10px;color:var(--tx3);cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .14s}
-.subj-del:hover{background:var(--c2l);color:var(--c2d);border-color:var(--c2)}
-
-/* session rows inside subject */
-.sess-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-.sess-row{display:grid;grid-template-columns:90px 1fr 1fr auto;gap:6px;align-items:end}
-.sess-row .fgroup{margin:0}
-.btn-xs{padding:4px 8px;border-radius:5px;border:1px solid var(--brd2);background:var(--sur2);font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:500;cursor:pointer;color:var(--tx2);transition:all .14s;white-space:nowrap;align-self:flex-end;height:34px}
-.btn-xs:hover{background:var(--sur3)}
-.btn-xs.danger:hover{background:var(--c2l);color:var(--c2d);border-color:var(--c2)}
-.btn-xs.add-sess{color:var(--c0);border-color:var(--c0);background:var(--c0l)}
-.btn-xs.add-sess:hover{background:var(--c0);color:#fff}
-
-.btn-add-subj{display:flex;align-items:center;gap:5px;padding:8px 12px;border-radius:var(--rsm);border:1.5px dashed var(--brd2);background:transparent;color:var(--tx3);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;width:100%;justify-content:center;transition:all .16s;margin-top:2px}
-.btn-add-subj:hover{border-color:var(--c0);color:var(--c0);background:var(--c0l)}
-
-/* modal actions */
-.mactions{display:flex;gap:8px;padding-top:2px}
-.btn{padding:9px 20px;border-radius:var(--rsm);border:1px solid var(--brd2);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--sur);color:var(--tx)}
-.btn:hover{background:var(--sur2)}
-.btnp{background:var(--c0);color:#fff;border-color:var(--c0)}
-.btnp:hover{background:var(--c0d);border-color:var(--c0d)}
-
-/* ─── Legend ─── */
-.legend{display:flex;align-items:center;gap:12px;padding:6px 11px;background:var(--sur);border:1px solid var(--brd);border-radius:7px;font-size:11px;color:var(--tx3);margin-bottom:9px;flex-wrap:wrap}
-.lgi{display:flex;align-items:center;gap:4px}
-.lgb{width:20px;height:10px;border-radius:3px;border-left:3px solid transparent}
-.lgb.lgs{background:var(--scl);border-left-color:var(--sc)}
-.lgb.lgc{background:var(--c0l);border-left-color:var(--c0)}
-.lgb.lgt{background:var(--c0l);border-left-color:var(--c0);opacity:.42;border-left-style:dashed;background-image:repeating-linear-gradient(135deg,transparent,transparent 3px,rgba(255,255,255,.4) 3px,rgba(255,255,255,.4) 5px)}
-
-/* ─── Timetable ─── */
-.ttwrap{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);box-shadow:var(--sh);overflow-x:auto;margin-bottom:16px}
-table.tt{width:100%;min-width:580px;border-collapse:collapse;table-layout:fixed}
-.tt th{padding:10px 5px;font-size:11px;font-weight:500;color:var(--tx3);border-bottom:1px solid var(--brd);text-align:center}
-.tt th.tth{width:52px}
-/* each 10-min row is 14px tall — tight grid */
-.tt td{border:0 none;border-right:1px solid var(--brd);border-bottom:1px solid transparent;padding:0;height:14px;vertical-align:top;position:relative}
-.tt td.ttd{font-size:9px;color:var(--tx3);text-align:right;padding-right:6px;background:var(--sur2);font-family:'Gmarket Sans',sans-serif;white-space:nowrap;vertical-align:middle;border-right:1px solid var(--brd)}
-/* hour boundary lines */
-.tt tr.hour-start td{border-top:1px solid var(--brd)}
-.tt tr.half-start td{border-top:1px solid rgba(0,0,0,.04)}
-.tt tr:last-child td{border-bottom:1px solid var(--brd)}
-.dlbl{font-size:12px;font-weight:700}
-.dmon{color:#3B82F6}.dtue{color:#10B981}.dwed{color:#F59E0B}.dthu{color:#8B5CF6}.dfri{color:#EF4444}
-
-/* blocks — fill the rowspan cell */
-.blk{display:flex;flex-direction:column;justify-content:center;border-radius:5px;padding:4px 7px;font-size:11px;width:calc(100% - 3px);height:calc(100% - 2px);margin:1px auto 1px;text-align:left;overflow:hidden;border-left:3px solid transparent;transition:transform .14s,box-shadow .14s;animation:pop .22s cubic-bezier(.34,1.56,.64,1);box-sizing:border-box}
-.blk:hover{transform:scaleX(1.03);z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.13)}
-.blk .bst{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
-.blk .bsb{font-size:9px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
-.blk .btime{font-size:8px;opacity:.55;margin-top:1px;white-space:nowrap}
-@keyframes pop{from{transform:scaleY(.4);opacity:0}to{transform:scaleY(1);opacity:1}}
-.bsc{background:var(--scl);color:var(--scd);border-left-color:var(--sc)}
-.b0{background:var(--c0l);color:var(--c0d);border-left-color:var(--c0)}
-.b1{background:var(--c1l);color:var(--c1d);border-left-color:var(--c1)}
-.b2{background:var(--c2l);color:var(--c2d);border-left-color:var(--c2)}
-.b3{background:var(--c3l);color:var(--c3d);border-left-color:var(--c3)}
-.b4{background:var(--c4l);color:var(--c4d);border-left-color:var(--c4)}
-.b5{background:var(--c5l);color:var(--c5d);border-left-color:var(--c5)}
-.b6{background:var(--c6l);color:var(--c6d);border-left-color:var(--c6)}
-.b7{background:var(--c7l);color:var(--c7d);border-left-color:var(--c7)}
-.b8{background:var(--c8l);color:var(--c8d);border-left-color:var(--c8)}
-.b9{background:var(--c9l);color:var(--c9d);border-left-color:var(--c9)}
-.blk.tr{opacity:.46;border-left-style:dashed;border-left-width:2px;background-image:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(255,255,255,.38) 4px,rgba(255,255,255,.38) 6px)}
-
-/* ─── Stats view ─── */
-.stitle{font-size:11px;font-weight:500;color:var(--tx3);margin-bottom:9px;text-transform:uppercase;letter-spacing:.4px}
-.sstats{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px;margin-bottom:20px}
-.ssc{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:13px 15px;box-shadow:var(--sh);display:flex;align-items:center;gap:11px;animation:fu .26s ease both}
-@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.ssico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
-.ssinf{flex:1;min-width:0}
-.ssn{font-size:12px;font-weight:700;margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sssb{font-size:10px;color:var(--tx3);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ssbw{height:3px;background:var(--sur2);border-radius:2px;margin-bottom:3px}
-.ssbar{height:3px;border-radius:2px;transition:width .5s cubic-bezier(.16,1,.3,1)}
-.ssmt{font-size:10px;color:var(--tx2)}
-.ssh{font-family:'Gmarket Sans',sans-serif;font-size:18px;font-weight:500;flex-shrink:0}
-.ddist{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:16px}
-.dbrs{display:flex;gap:5px;align-items:flex-end;height:80px;margin-bottom:4px}
-.dbrw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.dbro{width:100%;flex:1;background:var(--sur2);border-radius:4px;display:flex;align-items:flex-end;overflow:hidden}
-.dbri{width:100%;border-radius:4px;transition:height .5s cubic-bezier(.16,1,.3,1)}
-.dbrl{font-size:10px;color:var(--tx3);font-weight:500}
-.dbrv{font-size:10px;color:var(--tx2);font-family:'Gmarket Sans',sans-serif}
-.dbmon{background:#3B82F6}.dbtue{background:#10B981}.dbwed{background:#F59E0B}.dbthu{background:#8B5CF6}.dbfri{background:#EF4444}
-
-/* icon/bar color helpers */
-.i0{background:var(--c0l);color:var(--c0d)}.i1{background:var(--c1l);color:var(--c1d)}.i2{background:var(--c2l);color:var(--c2d)}.i3{background:var(--c3l);color:var(--c3d)}.i4{background:var(--c4l);color:var(--c4d)}.i5{background:var(--c5l);color:var(--c5d)}.i6{background:var(--c6l);color:var(--c6d)}.i7{background:var(--c7l);color:var(--c7d)}.i8{background:var(--c8l);color:var(--c8d)}.i9{background:var(--c9l);color:var(--c9d)}.isc{background:var(--scl);color:var(--scd)}
-.r0{background:var(--c0)}.r1{background:var(--c1)}.r2{background:var(--c2)}.r3{background:var(--c3)}.r4{background:var(--c4)}.r5{background:var(--c5)}.r6{background:var(--c6)}.r7{background:var(--c7)}.r8{background:var(--c8)}.r9{background:var(--c9)}.rsc{background:var(--sc)}
-
-/* ─── List view ─── */
-.lwrap{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
-.lhdr{padding:12px 16px;border-bottom:1px solid var(--brd);font-size:13px;font-weight:500;color:var(--tx2);display:flex;align-items:center;justify-content:space-between}
-.lgrp{padding:6px 15px;background:var(--sur2);font-size:10px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--brd)}
-.ei{display:flex;align-items:flex-start;gap:9px;padding:11px 15px;border-bottom:1px solid var(--brd);transition:background .14s;cursor:default}
-.ei:last-child{border-bottom:none}
-.ei:hover{background:var(--sur2)}
-.edot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.einfo{flex:1;min-width:0}
-.ename{font-size:13px;font-weight:600}
-.esubj{font-size:11px;color:var(--tx2);margin-top:2px;font-weight:500}
-.etags{margin-top:3px;display:flex;flex-wrap:wrap;gap:4px}
-.etag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
-.emeta2{font-size:10px;color:var(--tx3);margin-top:2px}
-.ehrs{font-size:11px;color:var(--tx3);white-space:nowrap;flex-shrink:0;padding-top:3px}
-.ecost{font-size:13px;font-weight:700;color:var(--c1d);white-space:nowrap;flex-shrink:0;padding-top:2px}
-.bdel{padding:3px 8px;border-radius:5px;border:1px solid var(--brd2);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:10px;color:var(--tx3);cursor:pointer;transition:all .13s;flex-shrink:0}
-.bdel:hover{background:var(--c2l);color:var(--c2d);border-color:var(--c2)}
-.empty{text-align:center;padding:32px 16px;color:var(--tx3);font-size:13px;line-height:2}
-.empty span{display:block;font-size:30px;margin-bottom:5px}
-
-/* ─── Toast ─── */
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--tx);color:var(--bg);padding:8px 20px;border-radius:40px;font-size:12px;font-weight:500;box-shadow:var(--shlg);transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .25s;opacity:0;z-index:999;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-
-/* ─── Divider ─── */
-.divider{height:1px;background:var(--brd);margin:4px 0}
-
-@media(max-width:640px){
-  .hdr{flex-direction:column;align-items:flex-start}
-  .srow{grid-template-columns:1fr 1fr}
-  .tb{flex-direction:column;align-items:flex-start}
-  .fcols4,.fcols3,.fcols2{grid-template-columns:1fr 1fr}
-  .sess-row{grid-template-columns:1fr 1fr}
-  .pg{padding:14px 10px 40px}
-  .modal{border-radius:14px}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>아이 시간표</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/timetable.css" />
+  <link rel="stylesheet" href="./styles/modal.css" />
 </head>
 <body>
-<div class="pg">
+  <div class="pg">
+    <header class="hdr">
+      <div class="logo">아이 <em>시간표</em><small>학교 · 학원 통합 관리</small></div>
+      <div class="ctabs" id="childTabs"></div>
+    </header>
 
-<!-- Header -->
-<div class="hdr">
-  <div class="logo">아이 <em>시간표</em><small>학교 · 학원 통합 관리</small></div>
-  <div class="ctabs" id="ctabs"></div>
-</div>
+    <section class="srow">
+      <div class="sc"><div class="slbl">이번 달 학원비</div><div class="sval vp" id="statCost">₩0</div></div>
+      <div class="sc"><div class="slbl">주간 학원 수업</div><div class="sval vt" id="statCount">0 회</div></div>
+      <div class="sc"><div class="slbl">주간 학원 시간</div><div class="sval vo" id="statHours">0 시간</div></div>
+      <div class="sc"><div class="slbl">등록 학원 수</div><div class="sval vb" id="statAcademies">0 곳</div></div>
+    </section>
 
-<!-- Stats -->
-<div class="srow">
-  <div class="sc"><div class="slbl">이번 달 학원비</div><div class="sval vp" id="sCost">₩0</div></div>
-  <div class="sc"><div class="slbl">주간 학원 수업</div><div class="sval vt" id="sCnt">0 회</div></div>
-  <div class="sc"><div class="slbl">주간 학원 시간</div><div class="sval vo" id="sHrs">0 시간</div></div>
-  <div class="sc"><div class="slbl">등록 학원 수</div><div class="sval vb" id="sAcad">0 곳</div></div>
-</div>
-
-<!-- Toolbar -->
-<div class="tb">
-  <div class="tbL">
-    <div class="tabset" id="modeTabs">
-      <button class="tabbtn on" data-m="academy">🎒 학원</button>
-      <button class="tabbtn" data-m="school">🏫 학교</button>
-    </div>
-    <div class="tabset" id="viewTabs">
-      <button class="tabbtn on" data-v="tt">시간표</button>
-      <button class="tabbtn" data-v="st">통계</button>
-      <button class="tabbtn" data-v="ls">목록</button>
-    </div>
-  </div>
-  <button class="addbtn" id="addBtn">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>추가
-  </button>
-</div>
-
-<!-- Timetable view -->
-<div id="vTT">
-  <div class="legend">
-    <span class="lgi"><div class="lgb lgs"></div>학교</span>
-    <span class="lgi"><div class="lgb lgc"></div>학원 수업</span>
-    <span class="lgi"><div class="lgb lgt"></div>이동시간</span>
-  </div>
-  <div class="ttwrap">
-    <table class="tt">
-      <thead><tr>
-        <th class="tth"></th>
-        <th><div class="dlbl dmon">월</div></th>
-        <th><div class="dlbl dtue">화</div></th>
-        <th><div class="dlbl dwed">수</div></th>
-        <th><div class="dlbl dthu">목</div></th>
-        <th><div class="dlbl dfri">금</div></th>
-      </tr></thead>
-      <tbody id="ttbody"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Stats view -->
-<div id="vST" style="display:none">
-  <div class="stitle">과목별 주간 시간</div>
-  <div class="sstats" id="sstats"></div>
-  <div class="stitle">요일별 학원 시간 분포</div>
-  <div class="ddist"><div class="dbrs" id="dbars"></div></div>
-</div>
-
-<!-- List view -->
-<div id="vLS" style="display:none">
-  <div class="lwrap">
-    <div class="lhdr"><span>전체 수업 목록</span><span id="lcnt" style="color:var(--tx3);font-size:11px"></span></div>
-    <div id="elist"></div>
-  </div>
-</div>
-
-</div><!-- /pg -->
-
-<!-- ─────────────────────────────────────────
-     ACADEMY MODAL
-───────────────────────────────────────── -->
-<div class="overlay" id="overlayAcad">
-<div class="modal" id="modalAcad">
-  <div class="mhdr">
-    <div class="mtitle">🎒 학원 등록 <span class="mbadge ba">학원</span></div>
-    <button class="mclose" id="closeAcad">✕</button>
-  </div>
-  <div class="mbody">
-    <!-- Step 1: Academy info -->
-    <div class="frow fcols2">
-      <div class="fgroup">
-        <label>학원명 *</label>
-        <input id="an" type="text" placeholder="예: 폴리영어">
-      </div>
-      <div class="fgroup">
-        <label>🚗 이동시간 (분)</label>
-        <input id="atr" type="number" placeholder="0" min="0" max="120" step="10">
-      </div>
-    </div>
-    <div class="frow fcols2">
-      <div class="fgroup">
-        <label>월 비용 (원)</label>
-        <input id="acost" type="number" placeholder="예: 350000" min="0">
-      </div>
-      <div class="fgroup">
-        <label>메모 (선택)</label>
-        <input id="amemo" type="text" placeholder="예: 셔틀 탑승">
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Step 2: Subjects with sessions -->
-    <div class="subj-panel">
-      <div class="subj-panel-title">📚 과목별 수업 시간 <span style="color:var(--tx3);font-weight:400;font-size:10px">— 과목 여러 개 추가 가능</span></div>
-      <div class="subj-list" id="subjList"></div>
-      <button class="btn-add-subj" id="addSubjBtn">+ 과목 추가</button>
-    </div>
-
-    <div class="mactions">
-      <button class="btn btnp" id="doAddAcad">등록하기</button>
-      <button class="btn" id="cancelAcad">취소</button>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ─────────────────────────────────────────
-     SCHOOL MODAL
-───────────────────────────────────────── -->
-<div class="overlay" id="overlaySchool">
-<div class="modal" id="modalSchool">
-  <div class="mhdr">
-    <div class="mtitle">🏫 학교 시간 등록 <span class="mbadge bs">학교</span></div>
-    <button class="mclose" id="closeSchool">✕</button>
-  </div>
-  <div class="mbody">
-    <div class="frow fcols2">
-      <div class="fgroup">
-        <label>요일</label>
-        <select id="sd">
-          <option value="mon">월요일</option><option value="tue">화요일</option>
-          <option value="wed">수요일</option><option value="thu">목요일</option>
-          <option value="fri">금요일</option>
-        </select>
-      </div>
-      <div class="fgroup">
-        <label>이름 (예: 1~6교시)</label>
-        <input id="sp" type="text" placeholder="예: 정규수업">
-      </div>
-    </div>
-    <div class="frow fcols2">
-      <div class="fgroup">
-        <label>시작 시간</label>
-        <div class="tpick"><select id="ssh"></select><span class="tsep">:</span><select id="ssm"></select></div>
-      </div>
-      <div class="fgroup">
-        <label>종료 시간</label>
-        <div class="tpick"><select id="seh"></select><span class="tsep">:</span><select id="sem"></select></div>
-      </div>
-    </div>
-    <div class="mactions">
-      <button class="btn btnp" id="doAddSchool">등록하기</button>
-      <button class="btn" id="cancelSchool">취소</button>
-    </div>
-  </div>
-</div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ─── Constants ───
-const DAYS=['mon','tue','wed','thu','fri'];
-const DL={mon:'월',tue:'화',wed:'수',thu:'목',fri:'금'};
-const DB={mon:'dbmon',tue:'dbtue',wed:'dbwed',thu:'dbthu',fri:'dbfri'};
-const CHILDREN=['시우','은우'];
-const NC=10;
-const DOTC=['#6C5CE7','#00A98F','#E05B3A','#C9348F','#0875D4','#B8870A','#0F8A7A','#A8265C','#2878BB','#5E50C0'];
-const HOURS_OPT=Array.from({length:18},(_,i)=>String(i+5).padStart(2,'0')); // 05~22
-const MINS_OPT=['00','10','20','30','40','50'];
-
-function tm(h,m){return +h*60+ +m}
-function slotLbl(t){return `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`}
-function diffH(s,e){return (e-s)/60}
-function fmt(n){return '₩'+Number(n).toLocaleString('ko-KR')}
-
-// 10-min slots 05:00~22:00
-const SLOTS=[];
-for(let h=5;h<=22;h++) for(let m=0;m<60;m+=10) SLOTS.push(h*60+m);
-
-// ─── State ───
-// Academy data model:
-// { name, cost, transit, memo,
-//   subjects: [{ subjectName, sessions:[{day,sh,sm,eh,em}] }, ...] }
-// School data model:
-// { day, period, sh, sm, eh, em }
-
-let state={child:CHILDREN[0],mode:'academy',view:'tt',data:{}};
-CHILDREN.forEach(c=>{state.data[c]={school:[],academies:[]}});
-
-// Color map: per child → academyName → colorIdx
-const cmap={};
-CHILDREN.forEach(c=>{cmap[c]={}});
-let gci=0;
-function getCI(child,name){
-  if(cmap[child][name]===undefined){cmap[child][name]=gci%NC;gci++;}
-  return cmap[child][name];
-}
-
-// ─── Persist ───
-function save(){try{localStorage.setItem('ks_v5',JSON.stringify({data:state.data,cmap}))}catch(e){}}
-function load(){
-  try{
-    const d=JSON.parse(localStorage.getItem('ks_v5')||'null');
-    if(!d)return;
-    CHILDREN.forEach(c=>{
-      if(d.data&&d.data[c])state.data[c]=d.data[c];
-      if(d.cmap&&d.cmap[c])Object.assign(cmap[c],d.cmap[c]);
-    });
-    let mx=-1;
-    CHILDREN.forEach(c=>Object.values(cmap[c]).forEach(v=>{if(v>mx)mx=v}));
-    if(mx>=0)gci=mx+1;
-  }catch(e){}
-}
-
-// ─── Toast ───
-let tt2;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  clearTimeout(tt2);tt2=setTimeout(()=>t.classList.remove('show'),2400);
-}
-
-// ─── Time select builder ───
-function mkSel(id,opts,def,suffix=''){
-  const el=document.getElementById(id);
-  if(!el)return;
-  el.innerHTML=opts.map(v=>`<option value="${v}"${v===def?' selected':''}>${v}${suffix}</option>`).join('');
-}
-function buildSchoolTimes(){
-  mkSel('ssh',HOURS_OPT,'08','시');mkSel('ssm',MINS_OPT,'00','분');
-  mkSel('seh',HOURS_OPT,'14','시');mkSel('sem',MINS_OPT,'00','분');
-}
-
-// ─── Subject editor state ───
-// subjects = [{subjectName:'', sessions:[{day,sh,sm,eh,em}]}]
-let editSubjects=[];
-
-function newSession(day='mon'){return{day,sh:'15',sm:'00',eh:'17',em:'00'}}
-function newSubject(){return{subjectName:'',sessions:[newSession()]}}
-
-function renderSubjects(){
-  const list=document.getElementById('subjList');
-  list.innerHTML='';
-  editSubjects.forEach((subj,si)=>{
-    const item=document.createElement('div');
-    item.className='subj-item';
-    const ci=si%NC;
-    const dc=DOTC[ci];
-    item.innerHTML=`
-      <div class="subj-item-hdr">
-        <div class="subj-dot" style="background:${dc}"></div>
-        <input type="text" class="subj-name-input"
-          placeholder="과목명 (예: 영어)"
-          value="${subj.subjectName}"
-          data-si="${si}"
-          style="flex:1;padding:5px 8px;border:1.5px solid var(--brd2);border-radius:6px;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:600;background:var(--bg);color:var(--tx)">
-        ${editSubjects.length>1?`<button class="subj-del" data-sdel="${si}">과목 삭제</button>`:''}
-      </div>
-      <div class="sess-list" data-si="${si}">
-        ${subj.sessions.map((s,ssi)=>`
-          <div class="sess-row" data-si="${si}" data-ssi="${ssi}">
-            <div class="fgroup">
-              <label>요일</label>
-              <select data-si="${si}" data-ssi="${ssi}" data-k="day">
-                ${DAYS.map(d=>`<option value="${d}"${d===s.day?' selected':''}>${DL[d]}</option>`).join('')}
-              </select>
-            </div>
-            <div class="fgroup">
-              <label>시작</label>
-              <div class="tpick">
-                <select data-si="${si}" data-ssi="${ssi}" data-k="sh">${HOURS_OPT.map(h=>`<option value="${h}"${h===s.sh?' selected':''}>${h}시</option>`).join('')}</select>
-                <span class="tsep">:</span>
-                <select data-si="${si}" data-ssi="${ssi}" data-k="sm">${MINS_OPT.map(m=>`<option value="${m}"${m===s.sm?' selected':''}>${m}분</option>`).join('')}</select>
-              </div>
-            </div>
-            <div class="fgroup">
-              <label>종료</label>
-              <div class="tpick">
-                <select data-si="${si}" data-ssi="${ssi}" data-k="eh">${HOURS_OPT.map(h=>`<option value="${h}"${h===s.eh?' selected':''}>${h}시</option>`).join('')}</select>
-                <span class="tsep">:</span>
-                <select data-si="${si}" data-ssi="${ssi}" data-k="em">${MINS_OPT.map(m=>`<option value="${m}"${m===s.em?' selected':''}>${m}분</option>`).join('')}</select>
-              </div>
-            </div>
-            <button class="btn-xs${subj.sessions.length>1?' danger':''}${subj.sessions.length>1?'':' hidden'}"
-              data-sdel-sess="${si}" data-sdel-ssi="${ssi}"
-              style="${subj.sessions.length===1?'visibility:hidden':''}"
-            >삭제</button>
-          </div>
-        `).join('')}
-      </div>
-      <button class="btn-xs add-sess" data-add-sess="${si}" style="margin-top:2px">+ 요일 추가</button>
-    `;
-    list.appendChild(item);
-  });
-
-  // events: subject name input
-  list.querySelectorAll('.subj-name-input').forEach(el=>{
-    el.addEventListener('input',()=>{editSubjects[el.dataset.si].subjectName=el.value});
-  });
-  // events: subject delete
-  list.querySelectorAll('[data-sdel]').forEach(btn=>{
-    btn.addEventListener('click',()=>{editSubjects.splice(+btn.dataset.sdel,1);renderSubjects()});
-  });
-  // events: session field change
-  list.querySelectorAll('select[data-si][data-k]').forEach(el=>{
-    el.addEventListener('change',()=>{editSubjects[el.dataset.si].sessions[el.dataset.ssi][el.dataset.k]=el.value});
-  });
-  // events: session delete
-  list.querySelectorAll('[data-sdel-sess]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const si=+btn.dataset.sdelSess,ssi=+btn.dataset.sdelSsi;
-      editSubjects[si].sessions.splice(ssi,1);renderSubjects();
-    });
-  });
-  // events: add session
-  list.querySelectorAll('[data-add-sess]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const si=+btn.dataset.addSess;
-      const last=editSubjects[si].sessions.at(-1);
-      const nextDay=DAYS[(DAYS.indexOf(last.day)+1)%5];
-      editSubjects[si].sessions.push(newSession(nextDay));
-      renderSubjects();
-    });
-  });
-}
-
-document.getElementById('addSubjBtn').addEventListener('click',()=>{
-  editSubjects.push(newSubject());renderSubjects();
-});
-
-// ─── Modal helpers ───
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-// close on overlay click
-['overlayAcad','overlaySchool'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',e=>{
-    if(e.target.id===id) closeModal(id);
-  });
-});
-document.getElementById('closeAcad').addEventListener('click',()=>closeModal('overlayAcad'));
-document.getElementById('cancelAcad').addEventListener('click',()=>closeModal('overlayAcad'));
-document.getElementById('closeSchool').addEventListener('click',()=>closeModal('overlaySchool'));
-document.getElementById('cancelSchool').addEventListener('click',()=>closeModal('overlaySchool'));
-
-// ─── Add button ───
-document.getElementById('addBtn').addEventListener('click',()=>{
-  if(state.mode==='academy'){
-    // reset form
-    document.getElementById('an').value='';
-    document.getElementById('atr').value='';
-    document.getElementById('acost').value='';
-    document.getElementById('amemo').value='';
-    editSubjects=[newSubject()];
-    renderSubjects();
-    openModal('overlayAcad');
-  } else {
-    openModal('overlaySchool');
-  }
-});
-
-// ─── Save Academy ───
-document.getElementById('doAddAcad').addEventListener('click',()=>{
-  const name=document.getElementById('an').value.trim();
-  if(!name){showToast('학원명을 입력해주세요');return}
-
-  // validate subjects
-  const subjects=editSubjects.map(s=>({...s,subjectName:s.subjectName.trim(),sessions:[...s.sessions.map(ss=>({...ss}))]}));
-  for(const subj of subjects){
-    if(!subj.subjectName){showToast('과목명을 모두 입력해주세요');return}
-    for(const s of subj.sessions){
-      if(tm(s.eh,s.em)<=tm(s.sh,s.sm)){showToast(`${subj.subjectName} — ${DL[s.day]}요일 시간을 확인해주세요`);return}
-    }
-    if(!subj.sessions.length){showToast('각 과목에 수업 요일을 하나 이상 추가해주세요');return}
-  }
-
-  getCI(state.child,name); // ensure color assigned
-  state.data[state.child].academies.push({
-    name,
-    cost:document.getElementById('acost').value.trim(),
-    transit:document.getElementById('atr').value.trim(),
-    memo:document.getElementById('amemo').value.trim(),
-    subjects
-  });
-  save();closeModal('overlayAcad');
-  showToast(`${name} 등록됐어요!`);renderAll();
-});
-
-// ─── Save School ───
-document.getElementById('doAddSchool').addEventListener('click',()=>{
-  const day=document.getElementById('sd').value;
-  const period=document.getElementById('sp').value.trim();
-  const sh=document.getElementById('ssh').value,sm=document.getElementById('ssm').value;
-  const eh=document.getElementById('seh').value,em=document.getElementById('sem').value;
-  if(tm(eh,em)<=tm(sh,sm)){showToast('종료시간이 시작시간보다 늦어야 해요');return}
-  state.data[state.child].school.push({day,period:period||'학교',sh,sm,eh,em});
-  save();closeModal('overlaySchool');showToast('학교 수업 등록됐어요!');renderAll();
-});
-
-// ─── Render child tabs ───
-function renderCtabs(){
-  const w=document.getElementById('ctabs');w.innerHTML='';
-  CHILDREN.forEach(c=>{
-    const b=document.createElement('button');b.className='ctab'+(c===state.child?' on':'');
-    b.innerHTML=`<div class="av">${c[0]}</div>${c}`;
-    b.onclick=()=>{state.child=c;renderAll()};
-    w.appendChild(b);
-  });
-}
-
-// ─── Stats row ───
-function renderStatsRow(){
-  const d=state.data[state.child];
-  let cost=0,cnt=0,hrs=0;const aset=new Set();
-  (d.academies||[]).forEach(ac=>{
-    cost+=Number(ac.cost)||0;aset.add(ac.name);
-    (ac.subjects||[]).forEach(sub=>{
-      (sub.sessions||[]).forEach(s=>{
-        cnt++;
-        // hours per session divided equally among subjects in this academy
-        const nSub=(ac.subjects||[]).length||1;
-        hrs+=diffH(tm(s.sh,s.sm),tm(s.eh,s.em))/nSub;
-      });
-    });
-  });
-  document.getElementById('sCost').textContent=fmt(cost);
-  document.getElementById('sCnt').textContent=cnt+' 회';
-  document.getElementById('sHrs').textContent=hrs.toFixed(1)+' 시간';
-  document.getElementById('sAcad').textContent=aset.size+' 곳';
-}
-
-// ─── Timetable (rowspan) ───
-function renderTT(){
-  const d=state.data[state.child];
-  const body=document.getElementById('ttbody');body.innerHTML='';
-
-  // Collect logical blocks: {day, sM, eM, top, bot, cls}
-  const blocks=[];
-  (d.school||[]).forEach(e=>{
-    blocks.push({day:e.day,sM:tm(e.sh,e.sm),eM:tm(e.eh,e.em),top:e.period,bot:'학교',cls:'bsc'});
-  });
-  (d.academies||[]).forEach(ac=>{
-    const ci=getCI(state.child,ac.name);
-    const tr=Number(ac.transit)||0;
-    (ac.subjects||[]).forEach(sub=>{
-      (sub.sessions||[]).forEach(s=>{
-        const sM=tm(s.sh,s.sm),eM=tm(s.eh,s.em);
-        blocks.push({day:s.day,sM,eM,top:sub.subjectName,bot:ac.name,cls:`b${ci}`});
-        if(tr>0&&ac.subjects.indexOf(sub)===0){
-          blocks.push({day:s.day,sM:sM-tr,eM:sM,top:'🚗 이동',bot:`${tr}분`,cls:`b${ci} tr`});
-        }
-      });
-    });
-  });
-
-  // Determine visible slot range
-  let lo=22*60, hi=5*60;
-  if(blocks.length){
-    blocks.forEach(b=>{if(b.sM<lo)lo=b.sM;if(b.eM>hi)hi=b.eM});
-  } else {lo=8*60;hi=17*60;}
-  lo=Math.floor(lo/10)*10; hi=Math.ceil(hi/10)*10;
-  const vis=SLOTS.filter(s=>s>=lo&&s<hi);
-  const nRows=vis.length;
-
-  // For each day col, build a skip-map: slotIndex → true if already filled by a rowspan
-  // And a cell map: slotIndex → {block} for the block starting here
-  const dayData={}; // day → { skip: Set, cellBlocks: Map<slotIdx, block[]> }
-  DAYS.forEach(day=>{
-    const skip=new Set();
-    const cellBlocks=new Map(); // slotIdx → block that starts here
-    blocks.filter(b=>b.day===day).forEach(b=>{
-      const startIdx=vis.findIndex(s=>s===b.sM);
-      const endIdx=vis.findIndex(s=>s>=b.eM); // first slot AFTER block
-      if(startIdx<0)return;
-      const actualEnd=endIdx<0?nRows:endIdx;
-      const span=actualEnd-startIdx;
-      if(span<=0)return;
-      if(!cellBlocks.has(startIdx))cellBlocks.set(startIdx,[]);
-      cellBlocks.get(startIdx).push({...b,span});
-      for(let i=startIdx+1;i<actualEnd;i++) skip.add(i);
-    });
-    dayData[day]={skip,cellBlocks};
-  });
-
-  // Build rows
-  vis.forEach((slot,ri)=>{
-    const tr=document.createElement('tr');
-    // hour / half-hour boundary classes for thin grid lines
-    if(slot%60===0) tr.classList.add('hour-start');
-    else if(slot%30===0) tr.classList.add('half-start');
-
-    // Time label cell — only show on the hour
-    const tdT=document.createElement('td');tdT.className='ttd';
-    tdT.textContent=slot%60===0?slotLbl(slot):'';
-    tr.appendChild(tdT);
-
-    DAYS.forEach(day=>{
-      const {skip,cellBlocks}=dayData[day];
-      if(skip.has(ri))return; // already covered by a rowspan above
-
-      const bArr=cellBlocks.get(ri)||[];
-      if(bArr.length===0){
-        // empty cell
-        const td=document.createElement('td');tr.appendChild(td);
-      } else {
-        // one cell with rowspan, containing all blocks that start here
-        const maxSpan=Math.max(...bArr.map(b=>b.span));
-        const td=document.createElement('td');
-        td.rowSpan=maxSpan;
-        td.style.verticalAlign='top';
-        td.style.padding='1px';
-        bArr.forEach(b=>{
-          const el=document.createElement('div');
-          el.className='blk '+b.cls;
-          // height fills the rowspan proportionally
-          el.style.height=`calc(${b.span * 14}px - 2px)`;
-          el.style.minHeight='14px';
-          const timeStr=slotLbl(b.sM)+'~'+slotLbl(b.eM);
-          el.innerHTML=`<div class="bst">${b.top}</div><div class="bsb">${b.bot}</div><div class="btime">${timeStr}</div>`;
-          td.appendChild(el);
-        });
-        tr.appendChild(td);
-      }
-    });
-    body.appendChild(tr);
-  });
-}
-
-// ─── Subject Stats ───
-function renderStats(){
-  const d=state.data[state.child];
-  const w=document.getElementById('sstats');
-  const dw=document.getElementById('dbars');
-  const map={};
-
-  (d.school||[]).forEach(e=>{
-    if(!map['__school__'])map['__school__']={n:'학교',sub:'학교수업',hrs:0,cost:0,cnt:0,ci:'sc'};
-    map['__school__'].hrs+=diffH(tm(e.sh,e.sm),tm(e.eh,e.em));map['__school__'].cnt++;
-  });
-
-  (d.academies||[]).forEach(ac=>{
-    const ci=getCI(state.child,ac.name);
-    const nSub=(ac.subjects||[]).length||1;
-    (ac.subjects||[]).forEach(sub=>{
-      const key=ac.name+'__'+sub.subjectName;
-      if(!map[key])map[key]={n:sub.subjectName,sub:ac.name,hrs:0,cost:Math.round((Number(ac.cost)||0)/nSub),cnt:0,ci};
-      (sub.sessions||[]).forEach(s=>{
-        // each session's time divided by number of subjects (they share the block)
-        map[key].hrs+=diffH(tm(s.sh,s.sm),tm(s.eh,s.em))/nSub;
-        map[key].cnt++;
-      });
-    });
-  });
-
-  const items=Object.values(map).sort((a,b)=>b.hrs-a.hrs);
-  const mx=items.length?items[0].hrs:1;
-  w.innerHTML='';
-  if(!items.length){w.innerHTML='<div class="empty"><span>📊</span>수업을 추가하면 통계가 나타나요</div>';return}
-  items.forEach((s,i)=>{
-    const pct=Math.round(s.hrs/mx*100);
-    const c=document.createElement('div');c.className='ssc';c.style.animationDelay=(i*.05)+'s';
-    const icls=s.ci==='sc'?'isc':`i${s.ci}`;
-    const rcls=s.ci==='sc'?'rsc':`r${s.ci}`;
-    c.innerHTML=`
-      <div class="ssico ${icls}">${s.n[0]}</div>
-      <div class="ssinf">
-        <div class="ssn">${s.n}</div>
-        <div class="sssb">${s.sub}</div>
-        <div class="ssbw"><div class="ssbar ${rcls}" style="width:${pct}%"></div></div>
-        <div class="ssmt">주 ${s.cnt}회${s.cost?' · '+fmt(s.cost)+'/월':''}</div>
-      </div>
-      <div class="ssh">${s.hrs.toFixed(1)}<small style="font-size:10px;color:var(--tx3)">h</small></div>
-    `;
-    w.appendChild(c);
-  });
-
-  const dayH={mon:0,tue:0,wed:0,thu:0,fri:0};
-  (d.academies||[]).forEach(ac=>{
-    (ac.subjects||[]).forEach(sub=>{
-      (sub.sessions||[]).forEach(s=>{dayH[s.day]+=diffH(tm(s.sh,s.sm),tm(s.eh,s.em))});
-    });
-  });
-  const mxD=Math.max(...Object.values(dayH),.1);
-  dw.innerHTML='';
-  DAYS.forEach(day=>{
-    const h=dayH[day];const pct=Math.round(h/mxD*100);
-    const c=document.createElement('div');c.className='dbrw';
-    c.innerHTML=`
-      <div class="dbrv">${h>0?h.toFixed(1)+'h':''}</div>
-      <div class="dbro"><div class="dbri ${DB[day]}" style="height:${pct}%;min-height:${h>0?'4px':'0'}"></div></div>
-      <div class="dbrl">${DL[day]}</div>
-    `;
-    dw.appendChild(c);
-  });
-}
-
-// ─── List ───
-function renderList(){
-  const d=state.data[state.child];
-  const w=document.getElementById('elist');w.innerHTML='';
-  let total=0;const cnt=document.getElementById('lcnt');
-
-  const school=d.school||[];
-  if(school.length){
-    const g=document.createElement('div');g.className='lgrp';g.textContent='🏫 학교';w.appendChild(g);
-    school.forEach((e,i)=>{
-      total++;
-      const el=document.createElement('div');el.className='ei';
-      el.innerHTML=`
-        <div class="edot" style="background:var(--sc)"></div>
-        <div class="einfo"><div class="ename">${e.period}</div><div class="emeta2">${DL[e.day]}요일 ${e.sh}:${e.sm} ~ ${e.eh}:${e.em}</div></div>
-        <div class="ehrs">${diffH(tm(e.sh,e.sm),tm(e.eh,e.em)).toFixed(1)}h</div>
-        <button class="bdel" data-t="school" data-i="${i}">삭제</button>
-      `;
-      w.appendChild(el);
-    });
-  }
-
-  const acads=d.academies||[];
-  if(acads.length){
-    const g=document.createElement('div');g.className='lgrp';g.textContent='🎒 학원';w.appendChild(g);
-    acads.forEach((ac,i)=>{
-      total++;
-      const ci=getCI(state.child,ac.name);
-      const dc=DOTC[ci]||'#888';
-      const nSub=(ac.subjects||[]).length||1;
-      const totalH=(ac.subjects||[]).reduce((sum,sub)=>
-        sum+(sub.sessions||[]).reduce((s2,s)=>s2+diffH(tm(s.sh,s.sm),tm(s.eh,s.em)),0),0);
-
-      // build subject rows
-      const subjHTML=(ac.subjects||[]).map(sub=>{
-        const subH=(sub.sessions||[]).reduce((s2,s)=>s2+diffH(tm(s.sh,s.sm),tm(s.eh,s.em)),0);
-        const tags=(sub.sessions||[]).map(s=>`<span class="etag" style="background:${dc}22;color:${dc}">${DL[s.day]} ${s.sh}:${s.sm}~${s.eh}:${s.em}</span>`).join('');
-        return `<div style="margin-bottom:4px">
-          <div class="esubj">📖 ${sub.subjectName} <span style="color:var(--tx3);font-size:10px">${(subH/nSub).toFixed(1)}h/주</span></div>
-          <div class="etags">${tags}</div>
-        </div>`;
-      }).join('');
-
-      const el=document.createElement('div');el.className='ei';
-      el.style.alignItems='flex-start';
-      el.innerHTML=`
-        <div class="edot" style="background:${dc}"></div>
-        <div class="einfo">
-          <div class="ename">${ac.name}${ac.transit&&+ac.transit>0?' 🚗'+ac.transit+'분':''}${ac.memo?' · '+ac.memo:''}</div>
-          ${subjHTML}
+    <section class="tb">
+      <div class="tbL">
+        <div class="tabset" id="modeTabs">
+          <button class="tabbtn on" data-mode="academy">🎒 학원</button>
+          <button class="tabbtn" data-mode="school">🏫 학교</button>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-          <div class="ecost">${ac.cost?fmt(ac.cost):''}</div>
-          <button class="bdel" data-t="acad" data-i="${i}">삭제</button>
+        <div class="tabset" id="viewTabs">
+          <button class="tabbtn on" data-view="timetable">시간표</button>
+          <button class="tabbtn" data-view="stats">통계</button>
+          <button class="tabbtn" data-view="list">목록</button>
         </div>
-      `;
-      w.appendChild(el);
-    });
-  }
+      </div>
+      <button class="addbtn" id="addButton">+ 추가</button>
+    </section>
 
-  if(!school.length&&!acads.length) w.innerHTML='<div class="empty"><span>📋</span>아직 등록된 수업이 없어요</div>';
-  cnt.textContent=`총 ${total}개`;
+    <main>
+      <section id="viewTimetable">
+        <div class="legend" id="legend"></div>
+        <div class="ttwrap">
+          <div class="ttgrid" id="timetableGrid"></div>
+        </div>
+      </section>
 
-  w.querySelectorAll('.bdel').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const t=btn.dataset.t,i=+btn.dataset.i;
-      if(t==='school') state.data[state.child].school.splice(i,1);
-      else state.data[state.child].academies.splice(i,1);
-      save();showToast('삭제했어요');renderAll();
-    });
-  });
-}
+      <section id="viewStats" hidden>
+        <div class="stitle">과목별 주간 시간</div>
+        <div class="sstats" id="subjectStats"></div>
+        <div class="stitle">요일별 학원 시간 분포</div>
+        <div class="ddist"><div class="dbrs" id="dayBars"></div></div>
+      </section>
 
-// ─── Switch view/mode ───
-function switchView(v){
-  state.view=v;
-  document.getElementById('vTT').style.display=v==='tt'?'block':'none';
-  document.getElementById('vST').style.display=v==='st'?'block':'none';
-  document.getElementById('vLS').style.display=v==='ls'?'block':'none';
-  document.querySelectorAll('#viewTabs .tabbtn').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-}
-function switchMode(m){
-  state.mode=m;
-  document.querySelectorAll('#modeTabs .tabbtn').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
-}
+      <section id="viewList" hidden>
+        <div class="lwrap">
+          <div class="lhdr"><span>전체 수업 목록</span><span id="listCount"></span></div>
+          <div id="eventList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-function renderAll(){renderCtabs();renderStatsRow();renderTT();renderStats();renderList();}
+  <div class="overlay" id="academyModal" aria-hidden="true">
+    <div class="modal">
+      <div class="mhdr">
+        <div class="mtitle" id="academyModalTitle">🎒 학원 등록 <span class="mbadge ba">학원</span></div>
+        <button class="mclose" data-close="academyModal">✕</button>
+      </div>
+      <div class="mbody">
+        <input type="hidden" id="academyEditId" />
+        <div class="frow fcols2">
+          <div class="fgroup"><label>학원명 *</label><input id="academyName" type="text" placeholder="예: 폴리영어" /></div>
+          <div class="fgroup"><label>학원 색상</label><input id="academyColor" type="color" /></div>
+        </div>
+        <div class="frow fcols3">
+          <div class="fgroup"><label>월 비용</label><input id="academyCost" type="number" min="0" placeholder="350000" /></div>
+          <div class="fgroup"><label>이동시간(분)</label><input id="academyTransit" type="number" min="0" max="120" step="5" placeholder="0" /></div>
+          <div class="fgroup"><label>메모</label><input id="academyMemo" type="text" placeholder="셔틀, 준비물 등" /></div>
+        </div>
+        <div class="subj-panel">
+          <div class="subj-panel-title">📚 과목 / 요일별 수업 시간</div>
+          <div class="subj-list" id="subjectEditor"></div>
+          <button class="btn-add-subj" id="addSubjectButton">+ 과목 추가</button>
+        </div>
+        <div class="mactions">
+          <button class="btn btnp" id="saveAcademyButton">저장</button>
+          <button class="btn danger" id="deleteAcademyButton" hidden>삭제</button>
+          <button class="btn" data-close="academyModal">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-// ─── Events ───
-document.querySelectorAll('#modeTabs .tabbtn').forEach(b=>b.addEventListener('click',()=>switchMode(b.dataset.m)));
-document.querySelectorAll('#viewTabs .tabbtn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.v)));
+  <div class="overlay" id="schoolModal" aria-hidden="true">
+    <div class="modal">
+      <div class="mhdr">
+        <div class="mtitle">🏫 학교 시간 등록 <span class="mbadge bs">학교</span></div>
+        <button class="mclose" data-close="schoolModal">✕</button>
+      </div>
+      <div class="mbody">
+        <p class="hint">학교 시간은 요일별 종료시간만 입력합니다. 시작은 항상 09:00으로 표시됩니다.</p>
+        <div class="school-days" id="schoolEditor"></div>
+        <div class="mactions">
+          <button class="btn btnp" id="saveSchoolButton">저장</button>
+          <button class="btn" data-close="schoolModal">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-// ─── Init ───
-buildSchoolTimes();
-editSubjects=[newSubject()];
-load();
-renderAll();
-switchView('tt');
-</script>
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="./scripts/app.js"></script>
 </body>
 </html>

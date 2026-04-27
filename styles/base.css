@@ -1,0 +1,16 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F3EE;--sur:#FFF;--sur2:#EFECE6;--sur3:#E6E2DA;
+  --brd:rgba(0,0,0,.08);--brd2:rgba(0,0,0,.14);
+  --tx:#18160F;--tx2:#6A6760;--tx3:#9B9890;
+  --r:14px;--rsm:8px;--sh:0 2px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+  --shlg:0 8px 32px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
+  --primary:#6C5CE7;--primary-light:#EDE8FF;--primary-dark:#4330CC;
+  --school:#4A5568;--school-light:#EDF0F5;--school-dark:#1E2A3D;
+  --danger:#E05B3A;--danger-light:#FCDDD6;--danger-dark:#A83E24;
+}
+@media(prefers-color-scheme:dark){:root{--bg:#100F0E;--sur:#1A1918;--sur2:#222120;--sur3:#2C2A28;--brd:rgba(255,255,255,.08);--brd2:rgba(255,255,255,.14);--tx:#EEE9E0;--tx2:#9A9690;--tx3:#666360;--school-light:#1C2430;--school-dark:#8FA3BC;--sh:0 2px 12px rgba(0,0,0,.3);--shlg:0 8px 32px rgba(0,0,0,.45)}}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
