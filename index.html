@@ -141,18 +141,23 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 table.tt{width:100%;min-width:580px;border-collapse:collapse;table-layout:fixed}
 .tt th{padding:10px 5px;font-size:11px;font-weight:500;color:var(--tx3);border-bottom:1px solid var(--brd);text-align:center}
 .tt th.tth{width:52px}
-.tt td{border:1px solid var(--brd);padding:2px;height:36px;vertical-align:middle;position:relative}
-.tt td.ttd{font-size:10px;color:var(--tx3);text-align:right;padding-right:7px;background:var(--sur2);font-family:'Gmarket Sans',sans-serif;white-space:nowrap}
-.tt tr:last-child td{border-bottom:none}
+/* each 10-min row is 14px tall — tight grid */
+.tt td{border:0 none;border-right:1px solid var(--brd);border-bottom:1px solid transparent;padding:0;height:14px;vertical-align:top;position:relative}
+.tt td.ttd{font-size:9px;color:var(--tx3);text-align:right;padding-right:6px;background:var(--sur2);font-family:'Gmarket Sans',sans-serif;white-space:nowrap;vertical-align:middle;border-right:1px solid var(--brd)}
+/* hour boundary lines */
+.tt tr.hour-start td{border-top:1px solid var(--brd)}
+.tt tr.half-start td{border-top:1px solid rgba(0,0,0,.04)}
+.tt tr:last-child td{border-bottom:1px solid var(--brd)}
 .dlbl{font-size:12px;font-weight:700}
 .dmon{color:#3B82F6}.dtue{color:#10B981}.dwed{color:#F59E0B}.dthu{color:#8B5CF6}.dfri{color:#EF4444}
 
-/* blocks */
-.blk{display:block;border-radius:4px;padding:2px 5px;font-size:10px;width:calc(100% - 2px);margin:0 auto;text-align:left;overflow:hidden;border-left:3px solid transparent;transition:transform .14s;animation:pop .22s cubic-bezier(.34,1.56,.64,1)}
-.blk:hover{transform:scale(1.04);z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.blk .bst{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.blk .bsb{font-size:9px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+/* blocks — fill the rowspan cell */
+.blk{display:flex;flex-direction:column;justify-content:center;border-radius:5px;padding:4px 7px;font-size:11px;width:calc(100% - 3px);height:calc(100% - 2px);margin:1px auto 1px;text-align:left;overflow:hidden;border-left:3px solid transparent;transition:transform .14s,box-shadow .14s;animation:pop .22s cubic-bezier(.34,1.56,.64,1);box-sizing:border-box}
+.blk:hover{transform:scaleX(1.03);z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.13)}
+.blk .bst{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.blk .bsb{font-size:9px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.blk .btime{font-size:8px;opacity:.55;margin-top:1px;white-space:nowrap}
+@keyframes pop{from{transform:scaleY(.4);opacity:0}to{transform:scaleY(1);opacity:1}}
 .bsc{background:var(--scl);color:var(--scd);border-left-color:var(--sc)}
 .b0{background:var(--c0l);color:var(--c0d);border-left-color:var(--c0)}
 .b1{background:var(--c1l);color:var(--c1d);border-left-color:var(--c1)}
@@ -670,62 +675,98 @@ function renderStatsRow(){
   document.getElementById('sAcad').textContent=aset.size+' 곳';
 }
 
-// ─── Timetable ───
+// ─── Timetable (rowspan) ───
 function renderTT(){
   const d=state.data[state.child];
   const body=document.getElementById('ttbody');body.innerHTML='';
-  const blocks=[];
 
-  // school
+  // Collect logical blocks: {day, sM, eM, top, bot, cls}
+  const blocks=[];
   (d.school||[]).forEach(e=>{
-    blocks.push({day:e.day,sM:tm(e.sh,e.sm),eM:tm(e.eh,e.em),top:e.period,bot:'학교',cls:'bsc',isTr:false});
+    blocks.push({day:e.day,sM:tm(e.sh,e.sm),eM:tm(e.eh,e.em),top:e.period,bot:'학교',cls:'bsc'});
   });
-  // academies → each subject × session → block
   (d.academies||[]).forEach(ac=>{
     const ci=getCI(state.child,ac.name);
     const tr=Number(ac.transit)||0;
-    const nSub=(ac.subjects||[]).length||1;
-
     (ac.subjects||[]).forEach(sub=>{
       (sub.sessions||[]).forEach(s=>{
         const sM=tm(s.sh,s.sm),eM=tm(s.eh,s.em);
-        // show subject name as top, academy as bottom
-        blocks.push({day:s.day,sM,eM,top:sub.subjectName,bot:ac.name,cls:`b${ci}`,isTr:false});
-        // transit only once per academy per session (attach to first subject)
+        blocks.push({day:s.day,sM,eM,top:sub.subjectName,bot:ac.name,cls:`b${ci}`});
         if(tr>0&&ac.subjects.indexOf(sub)===0){
-          blocks.push({day:s.day,sM:sM-tr,eM:sM,top:'🚗 이동',bot:`${tr}분`,cls:`b${ci} tr`,isTr:true});
+          blocks.push({day:s.day,sM:sM-tr,eM:sM,top:'🚗 이동',bot:`${tr}분`,cls:`b${ci} tr`});
         }
       });
     });
   });
 
-  if(!blocks.length){
-    const dfSlots=SLOTS.filter(s=>s>=8*60&&s<17*60);
-    dfSlots.forEach(slot=>{
-      const tr=document.createElement('tr');
-      const tdT=document.createElement('td');tdT.className='ttd';tdT.textContent=slot%60===0?slotLbl(slot):'';
-      tr.appendChild(tdT);DAYS.forEach(()=>tr.appendChild(document.createElement('td')));
-      body.appendChild(tr);
-    });return;
-  }
-
-  let lo=22*60,hi=5*60;
-  blocks.forEach(b=>{if(b.sM<lo)lo=b.sM;if(b.eM>hi)hi=b.eM});
-  lo=Math.floor(lo/10)*10;hi=Math.ceil(hi/10)*10;
+  // Determine visible slot range
+  let lo=22*60, hi=5*60;
+  if(blocks.length){
+    blocks.forEach(b=>{if(b.sM<lo)lo=b.sM;if(b.eM>hi)hi=b.eM});
+  } else {lo=8*60;hi=17*60;}
+  lo=Math.floor(lo/10)*10; hi=Math.ceil(hi/10)*10;
   const vis=SLOTS.filter(s=>s>=lo&&s<hi);
+  const nRows=vis.length;
 
-  vis.forEach(slot=>{
+  // For each day col, build a skip-map: slotIndex → true if already filled by a rowspan
+  // And a cell map: slotIndex → {block} for the block starting here
+  const dayData={}; // day → { skip: Set, cellBlocks: Map<slotIdx, block[]> }
+  DAYS.forEach(day=>{
+    const skip=new Set();
+    const cellBlocks=new Map(); // slotIdx → block that starts here
+    blocks.filter(b=>b.day===day).forEach(b=>{
+      const startIdx=vis.findIndex(s=>s===b.sM);
+      const endIdx=vis.findIndex(s=>s>=b.eM); // first slot AFTER block
+      if(startIdx<0)return;
+      const actualEnd=endIdx<0?nRows:endIdx;
+      const span=actualEnd-startIdx;
+      if(span<=0)return;
+      if(!cellBlocks.has(startIdx))cellBlocks.set(startIdx,[]);
+      cellBlocks.get(startIdx).push({...b,span});
+      for(let i=startIdx+1;i<actualEnd;i++) skip.add(i);
+    });
+    dayData[day]={skip,cellBlocks};
+  });
+
+  // Build rows
+  vis.forEach((slot,ri)=>{
     const tr=document.createElement('tr');
+    // hour / half-hour boundary classes for thin grid lines
+    if(slot%60===0) tr.classList.add('hour-start');
+    else if(slot%30===0) tr.classList.add('half-start');
+
+    // Time label cell — only show on the hour
     const tdT=document.createElement('td');tdT.className='ttd';
-    tdT.textContent=slot%60===0?slotLbl(slot):'';tr.appendChild(tdT);
+    tdT.textContent=slot%60===0?slotLbl(slot):'';
+    tr.appendChild(tdT);
+
     DAYS.forEach(day=>{
-      const td=document.createElement('td');
-      blocks.filter(b=>b.day===day&&slot>=b.sM&&slot<b.eM).forEach(b=>{
-        const el=document.createElement('div');el.className='blk '+b.cls;
-        el.innerHTML=`<div class="bst">${b.top}</div><div class="bsb">${b.bot}</div>`;
-        td.appendChild(el);
-      });
-      tr.appendChild(td);
+      const {skip,cellBlocks}=dayData[day];
+      if(skip.has(ri))return; // already covered by a rowspan above
+
+      const bArr=cellBlocks.get(ri)||[];
+      if(bArr.length===0){
+        // empty cell
+        const td=document.createElement('td');tr.appendChild(td);
+      } else {
+        // one cell with rowspan, containing all blocks that start here
+        const maxSpan=Math.max(...bArr.map(b=>b.span));
+        const td=document.createElement('td');
+        td.rowSpan=maxSpan;
+        td.style.verticalAlign='top';
+        td.style.padding='1px';
+        bArr.forEach(b=>{
+          const el=document.createElement('div');
+          el.className='blk '+b.cls;
+          // height fills the rowspan proportionally
+          el.style.height=`calc(${b.span * 14}px - 2px)`;
+          el.style.minHeight='14px';
+          const timeStr=slotLbl(b.sM)+'~'+slotLbl(b.eM);
+          el.innerHTML=`<div class="bst">${b.top}</div><div class="bsb">${b.bot}</div><div class="btime">${timeStr}</div>`;
+          td.appendChild(el);
+        });
+        tr.appendChild(td);
+      }
     });
     body.appendChild(tr);
   });
