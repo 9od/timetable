@@ -4,46 +4,66 @@ import { clamp, minutes, textColor, tint, toHHMM } from './utils.js';
 const GRID_ROW_OFFSET = 2;
 const DAY_COL_OFFSET = 2;
 
+function schoolBlocks(data) {
+  return (data.school || []).map(s => ({
+    type: 'school', id: s.id, day: s.day,
+    start: minutes('09:00'), end: minutes(s.end), school: s
+  }));
+}
+
+function academySessionItems(academy) {
+  const items = [];
+  (academy.subjects || []).forEach(subject => {
+    (subject.sessions || []).forEach(session => {
+      const start = minutes(session.start);
+      const end = minutes(session.end);
+      if (end > start) items.push({ academy, subject, session, day: session.day, start, end });
+    });
+  });
+  return items;
+}
+
+function groupAcademyItems(items) {
+  const byDay = new Map();
+  items.forEach(item => {
+    if (!byDay.has(item.day)) byDay.set(item.day, []);
+    byDay.get(item.day).push(item);
+  });
+
+  const groups = [];
+  byDay.forEach((dayItems, day) => {
+    dayItems.sort((a, b) => a.start - b.start || a.end - b.end);
+    let current = null;
+    dayItems.forEach(item => {
+      if (!current || item.start > current.end) {
+        current = { day, start: item.start, end: item.end, items: [item] };
+        groups.push(current);
+      } else {
+        current.items.push(item);
+        current.end = Math.max(current.end, item.end);
+      }
+    });
+  });
+  return groups;
+}
+
 function academyBlocks(data) {
   const blocks = [];
   (data.academies || []).forEach(academy => {
     const transit = Number(academy.transit) || 0;
-    const sessionsByDayStart = new Map();
-
-    (academy.subjects || []).forEach(subject => {
-      (subject.sessions || []).forEach(session => {
-        const start = minutes(session.start);
-        const end = minutes(session.end);
-        const key = `${session.day}:${start}`;
-        if (!sessionsByDayStart.has(key)) sessionsByDayStart.set(key, []);
-        sessionsByDayStart.get(key).push({ academy, subject, session, start, end });
-      });
-    });
-
-    // 같은 학원 과목 중 같은 시작 시간대는 하나의 큰 블록으로 묶고 내부를 가로 N분할한다.
-    sessionsByDayStart.forEach(items => {
-      const day = items[0].session.day;
-      const start = Math.min(...items.map(i => i.start));
-      const end = Math.max(...items.map(i => i.end));
+    groupAcademyItems(academySessionItems(academy)).forEach(group => {
       blocks.push({
         type: 'academyGroup',
-        id: academy.id,
-        day,
-        start,
-        end,
-        academy,
-        items
+        id: `${academy.id}_${group.day}_${group.start}_${group.end}`,
+        day: group.day, start: group.start, end: group.end, academy, items: group.items
       });
       if (transit > 0) {
-        blocks.push({ type: 'transit', day, start: start - transit, end: start, academy, id: `${academy.id}_transit_${day}_${start}` });
+        blocks.push({ type: 'transit', phase: 'before', day: group.day, start: group.start - transit, end: group.start, academy, id: `${academy.id}_before_${group.day}_${group.start}` });
+        blocks.push({ type: 'transit', phase: 'after', day: group.day, start: group.end, end: group.end + transit, academy, id: `${academy.id}_after_${group.day}_${group.end}` });
       }
     });
   });
   return blocks;
-}
-
-function schoolBlocks(data) {
-  return (data.school || []).map(s => ({ type: 'school', id: s.id, day: s.day, start: minutes('09:00'), end: minutes(s.end), school: s }));
 }
 
 function rowStart(minute) { return GRID_ROW_OFFSET + Math.floor((minute - START_MIN) / SLOT_MIN); }
@@ -98,8 +118,7 @@ export function renderTimetable(data, onEditAcademy) {
     });
   }
 
-  const blocks = [...schoolBlocks(data), ...academyBlocks(data)].map(clipBlock).filter(Boolean);
-  blocks.forEach(block => {
+  [...schoolBlocks(data), ...academyBlocks(data)].map(clipBlock).filter(Boolean).forEach(block => {
     if (block.type === 'academyGroup') renderAcademyGroup(grid, block, onEditAcademy);
     if (block.type === 'transit') renderTransit(grid, block);
     if (block.type === 'school') renderSchool(grid, block);
@@ -123,8 +142,9 @@ function renderTransit(grid, block) {
   el.style.gridRow = `${rowStart(block.clippedStart)} / span ${rowSpan(block.clippedStart, block.clippedEnd)}`;
   el.style.background = tint(color, '22');
   el.style.borderLeftColor = color;
-  el.style.color = textColor('#ffffff');
-  el.innerHTML = `<div class="name">🚗 이동</div><div class="meta">${block.academy.name}</div><div class="time">${toHHMM(block.start)}~${toHHMM(block.end)}${block.clipped ? ' <span class="clip-badge">clip</span>' : ''}</div>`;
+  el.style.color = textColor(color);
+  const label = block.phase === 'before' ? '이동(갈 때)' : '이동(올 때)';
+  el.innerHTML = `<div class="name">🚗 ${label}</div><div class="meta">${block.academy.name}</div><div class="time">${toHHMM(block.start)}~${toHHMM(block.end)}${block.clipped ? ' <span class="clip-badge">clip</span>' : ''}</div>`;
   grid.appendChild(el);
 }
 
@@ -137,12 +157,29 @@ function renderAcademyGroup(grid, block, onEditAcademy) {
   group.addEventListener('click', () => onEditAcademy(block.academy.id));
 
   const color = block.academy.color;
+  const groupDuration = Math.max(1, block.end - block.start);
+
   block.items.forEach(item => {
     const el = document.createElement('div');
-    el.className = 'tt-block';
+    el.className = 'tt-block tt-subblock';
     el.style.background = tint(color, '26');
     el.style.borderLeftColor = color;
-    el.style.color = textColor('#ffffff');
+    el.style.color = textColor(color);
+
+    const overlapping = block.items
+      .filter(other => other.start < item.end && other.end > item.start)
+      .sort((a, b) => a.start - b.start || a.end - b.end || a.subject.name.localeCompare(b.subject.name));
+    const parallelCount = overlapping.length;
+    const parallelIndex = Math.max(0, overlapping.findIndex(other => other.session.id === item.session.id));
+    const topPct = ((item.start - block.start) / groupDuration) * 100;
+    const heightPct = ((item.end - item.start) / groupDuration) * 100;
+    const widthPct = 100 / parallelCount;
+    const leftPct = parallelIndex * widthPct;
+
+    el.style.top = `${topPct}%`;
+    el.style.height = `calc(${heightPct}% - 2px)`;
+    el.style.left = `calc(${leftPct}% + 1px)`;
+    el.style.width = `calc(${widthPct}% - 2px)`;
     el.innerHTML = `<div class="name">${item.subject.name}</div><div class="meta">${block.academy.name}</div><div class="time">${toHHMM(item.start)}~${toHHMM(item.end)}${block.clipped ? ' <span class="clip-badge">clip</span>' : ''}</div>`;
     group.appendChild(el);
   });

@@ -1,52 +1,41 @@
-# 🎒 아이 시간표 관리
+# 아이 시간표 관리
 
-초등학생 자녀의 학교·학원 스케줄과 비용을 한눈에 관리하는 GitHub Pages용 정적 웹앱입니다.
+초등학생 자녀의 학교/학원 스케줄과 비용을 관리하는 GitHub Pages용 정적 웹앱입니다.
 
-## 반영된 개선사항
+## 주요 변경 사항
 
-- `index.html` 단일 파일 구조 제거
-- CSS를 `base / layout / components / timetable / modal`로 분리
-- JS를 `app / store / modals / timetable / stats / list / ui / utils`로 분리
-- 시간표 범위 09:00~20:00 고정
-- 범위 밖 일정은 시간표 안에서 클리핑 표시
-- 30분 보조선 표시
-- 학원별 색상 직접 지정
-- 블록에 학원명 명확히 표시
-- 시간표 블록 클릭 시 학원 수정 모달 오픈
-- 같은 학원·같은 시간대 여러 과목은 세로 누적이 아니라 가로 N분할
-- 학교 시간은 요일별 종료시간만 입력, 시작은 09:00 고정
+- `data/default.json`을 기본 데이터로 사용합니다.
+- 최초 접속 시 `localStorage`에 데이터가 없으면 `data/default.json`을 자동 로드합니다.
+- 이후 수정/저장은 `localStorage`의 `kids_schedule_modular_v1` key에 저장됩니다.
+- 화면 우측 상단의 `JSON 백업` 버튼으로 현재 데이터를 파일로 다운로드할 수 있습니다.
+- 시간표 범위는 09:00~20:00으로 고정됩니다.
+- 범위 밖 블록은 표시 가능한 범위로 클리핑됩니다.
+- 학원별 색상을 사용합니다.
+- 같은 학원 내 연속/겹침 과목은 하나의 큰 블록으로 묶고, 같은 시간대 과목은 가로 분할합니다.
+- 이동시간 입력 시 수업 전/후에 각각 이동시간 블록을 표시합니다.
+- 통계는 학원별이 아니라 과목명 기준으로 합산합니다. 예: 여러 학원의 `영어`는 `영어` 하나로 합산됩니다.
 
-## 파일 구조
+## 데이터 구조
 
 ```text
-/
-├─ index.html
-├─ styles/
-│  ├─ base.css
-│  ├─ layout.css
-│  ├─ components.css
-│  ├─ timetable.css
-│  └─ modal.css
-└─ scripts/
-   ├─ app.js
-   ├─ constants.js
-   ├─ list.js
-   ├─ modals.js
-   ├─ stats.js
-   ├─ store.js
-   ├─ timetable.js
-   ├─ ui.js
-   └─ utils.js
+data/default.json
+└ data
+  ├ 시우
+  │ ├ school[]
+  │ └ academies[]
+  │   └ subjects[]
+  │     └ sessions[]
+  └ 은우
 ```
 
 ## GitHub Pages 배포
 
-1. 위 파일 구조 그대로 GitHub 저장소에 업로드
-2. `Settings → Pages`
-3. Source: `Deploy from a branch`
-4. Branch: `main`, Folder: `/root`
-5. 저장 후 제공되는 Pages 주소로 접속
+1. 이 폴더 전체를 저장소 루트에 업로드합니다.
+2. GitHub 저장소 `Settings → Pages`에서 `main / root`를 선택합니다.
+3. 배포된 주소로 접속합니다.
 
-## 주의
+## 데이터 유지 방식
 
-브라우저 `localStorage`에 저장되므로 기기·브라우저가 바뀌면 데이터가 공유되지 않습니다.
+- 소스 파일을 수정해서 다시 배포해도 같은 URL이면 브라우저 `localStorage` 데이터가 유지됩니다.
+- URL, 브라우저, PC가 바뀌면 데이터가 다를 수 있으므로 정기적으로 `JSON 백업`을 눌러 보관하세요.
+- 기본 데이터를 바꾸고 싶으면 `data/default.json`을 수정하면 됩니다.

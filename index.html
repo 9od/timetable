@@ -38,6 +38,7 @@
           <button class="tabbtn" data-view="list">목록</button>
         </div>
       </div>
+      <button class="addbtn secondary" id="backupButton">JSON 백업</button>
       <button class="addbtn" id="addButton">+ 추가</button>
     </section>
 
@@ -50,10 +51,15 @@
       </section>
 
       <section id="viewStats" hidden>
-        <div class="stitle">과목별 주간 시간</div>
-        <div class="sstats" id="subjectStats"></div>
-        <div class="stitle">요일별 학원 시간 분포</div>
-        <div class="ddist"><div class="dbrs" id="dayBars"></div></div>
+        <div class="srow compact" id="statsSummary"></div>
+        <div class="chart-card">
+          <div class="chart-title">요일별 학원 시간 통계</div>
+          <div class="chart-box" id="dayChart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">과목별 주간 시간 통계</div>
+          <div class="chart-box" id="subjectChart"></div>
+        </div>
       </section>
 
       <section id="viewList" hidden>
@@ -115,6 +121,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="https://code.highcharts.com/highcharts.js"></script>
   <script type="module" src="./scripts/app.js"></script>
 </body>
 </html>

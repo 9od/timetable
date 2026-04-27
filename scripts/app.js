@@ -1,4 +1,4 @@
-import { currentData, ensureAcademyIds, loadState, saveState, state } from './store.js';
+import { currentData, ensureAcademyIds, loadState, saveState, state, exportBackup } from './store.js';
 import { initModals, openAcademyForm, openSchoolForm } from './modals.js';
 import { renderChildTabs, renderLegend, qs, switchMode, switchView, toast } from './ui.js';
 import { renderTimetable } from './timetable.js';
@@ -29,14 +29,20 @@ function bindStaticEvents() {
     if (state.mode === 'school') openSchoolForm();
     else openAcademyForm();
   });
+  const backupButton = qs('backupButton');
+  if (backupButton) backupButton.addEventListener('click', () => exportBackup());
   document.querySelectorAll('#modeTabs .tabbtn').forEach(button => button.addEventListener('click', () => switchMode(button.dataset.mode)));
   document.querySelectorAll('#viewTabs .tabbtn').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
 }
 
-loadState();
-ensureAcademyIds();
-saveState();
-initModals(renderAll);
-bindStaticEvents();
-renderAll();
-switchView('timetable');
+async function bootstrap() {
+  await loadState();
+  ensureAcademyIds();
+  saveState();
+  initModals(renderAll);
+  bindStaticEvents();
+  renderAll();
+  switchView('timetable');
+}
+
+bootstrap();
