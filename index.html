@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아이 시간표 관리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface2: #F0EDE8;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1A1816;
+  --text2: #6B6760;
+  --text3: #9E9B96;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+
+  /* Subject Colors */
+  --col0: #6C5CE7; --col0l: #EDE8FF; --col0d: #4834C7;
+  --col1: #00B89E; --col1l: #D6F5F1; --col1d: #007A6A;
+  --col2: #E17055; --col2l: #FDE8E2; --col2d: #B8543C;
+  --col3: #D63BA5; --col3l: #FAE2F2; --col3d: #A82B80;
+  --col4: #0984E3; --col4l: #D6EDFB; --col4d: #0567B5;
+  --col5: #FDCB6E; --col5l: #FEF6DC; --col5d: #C69A2E;
+  --col6: #00B5A0; --col6l: #D6F4F1; --col6d: #00807A;
+  --col7: #E84393; --col7l: #FCE0EF; --col7d: #B82C70;
+  --col8: #74B9FF; --col8l: #E0F2FF; --col8d: #2D86C8;
+  --col9: #A29BFE; --col9l: #EDEAFF; --col9d: #6C63C9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111010;
+    --surface: #1C1B1A;
+    --surface2: #252422;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #F0EDE8;
+    --text2: #A09D97;
+    --text3: #6B6760;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  }
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── Layout ── */
+.page-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ── Header ── */
+.site-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.logo {
+  font-family: 'Gmarket Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+.logo em {
+  font-style: normal;
+  color: var(--col0);
+}
+.logo small {
+  display: block;
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 300;
+  margin-top: 2px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* ── Child Tabs ── */
+.child-tabs {
+  display: flex;
+  gap: 8px;
+}
+.child-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 40px;
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: var(--text2);
+  transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.child-tab:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.child-tab.active { background: var(--text); color: #fff; border-color: var(--text); }
+.child-tab .avatar {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  background: rgba(255,255,255,0.25);
+  color: inherit;
+}
+.child-tab:not(.active) .avatar { background: var(--col0l); color: var(--col0d); }
+
+/* ── Stats Row ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); }
+.stat-label {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.stat-value {
+  font-family: 'Gmarket Sans', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+}
+.stat-value.v-purple { color: var(--col0); }
+.stat-value.v-teal   { color: var(--col1); }
+.stat-value.v-coral  { color: var(--col2); }
+.stat-value.v-blue   { color: var(--col4); }
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.view-tabs {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+.view-tab {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.view-tab.active { background: var(--text); color: #fff; }
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 10px;
+  border: 1.5px solid var(--col0);
+  background: var(--col0l);
+  color: var(--col0d);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-add:hover { background: var(--col0); color: #fff; }
+.btn-add svg { width: 16px; height: 16px; }
+
+/* ── Form Panel ── */
+.form-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-lg);
+  animation: slideDown 0.25s cubic-bezier(.34,1.2,.64,1);
+  display: none;
+}
+.form-panel.open { display: block; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.form-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 18px;
+  color: var(--text);
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.form-field label {
+  display: block;
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 400;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--col0);
+  box-shadow: 0 0 0 3px rgba(108,92,231,0.12);
+}
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border2);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface);
+  color: var(--text);
+}
+.btn:hover { background: var(--surface2); }
+.btn-primary {
+  background: var(--col0);
+  color: #fff;
+  border-color: var(--col0);
+}
+.btn-primary:hover { background: var(--col0d); }
+
+/* ── Timetable ── */
+.timetable-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+table.tt {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.tt th {
+  padding: 12px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.tt th.time-th { width: 64px; }
+.tt td {
+  border: 1px solid var(--border);
+  padding: 4px;
+  height: 48px;
+  vertical-align: middle;
+  text-align: center;
+  position: relative;
+}
+.tt td.time-td {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: right;
+  padding-right: 10px;
+  background: var(--surface2);
+  font-family: 'Gmarket Sans', sans-serif;
+  letter-spacing: -0.3px;
+}
+.tt tr:last-child td { border-bottom: none; }
+.day-label { font-size: 13px; font-weight: 700; }
+.d-mon { color: #4A90D9; }
+.d-tue { color: #27AE60; }
+.d-wed { color: #E67E22; }
+.d-thu { color: #8E44AD; }
+.d-fri { color: #E74C3C; }
+
+/* ── Class Blocks ── */
+.class-block {
+  display: block;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  width: calc(100% - 4px);
+  margin: 0 auto;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+  border-left: 3px solid transparent;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.class-block:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  z-index: 10;
+}
+.class-block .cb-subject { font-size: 10px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.class-block .cb-academy { font-size: 9px; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes popIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Color classes for blocks */
+.cl0 { background:var(--col0l); color:var(--col0d); border-left-color:var(--col0); }
+.cl1 { background:var(--col1l); color:var(--col1d); border-left-color:var(--col1); }
+.cl2 { background:var(--col2l); color:var(--col2d); border-left-color:var(--col2); }
+.cl3 { background:var(--col3l); color:var(--col3d); border-left-color:var(--col3); }
+.cl4 { background:var(--col4l); color:var(--col4d); border-left-color:var(--col4); }
+.cl5 { background:var(--col5l); color:var(--col5d); border-left-color:var(--col5); }
+.cl6 { background:var(--col6l); color:var(--col6d); border-left-color:var(--col6); }
+.cl7 { background:var(--col7l); color:var(--col7d); border-left-color:var(--col7); }
+.cl8 { background:var(--col8l); color:var(--col8d); border-left-color:var(--col8); }
+.cl9 { background:var(--col9l); color:var(--col9d); border-left-color:var(--col9); }
+
+/* ── Transit blocks (이동시간) — same hue but much lighter + dashed border ── */
+.class-block.transit {
+  opacity: 0.55;
+  border-left-style: dashed;
+  border-left-width: 2px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 4px,
+    rgba(255,255,255,0.35) 4px,
+    rgba(255,255,255,0.35) 6px
+  );
+}
+.class-block.transit .cb-subject { font-size: 9px; font-weight: 500; }
+.class-block.transit .cb-transit-icon { font-size: 9px; margin-right: 2px; }
+
+/* Legend pill */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 14px;
+  background: var(--surface2);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-block {
+  width: 24px; height: 12px; border-radius: 3px;
+  border-left: 3px solid rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.1);
+}
+.legend-block.solid { opacity: 1; }
+.legend-block.faded {
+  opacity: 0.5;
+  border-left-style: dashed;
+  background-image: repeating-linear-gradient(135deg,transparent,transparent 3px,rgba(255,255,255,0.4) 3px,rgba(255,255,255,0.4) 5px);
+}
+
+/* ── Stats View ── */
+.stats-view { display: none; }
+.stats-view.active { display: block; }
+.stats-section-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.subject-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.subject-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: fadeUp 0.3s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.subject-stat-card .icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.subject-stat-card .info { flex: 1; }
+.subject-stat-card .s-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.subject-stat-card .s-academy { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.subject-stat-card .s-bar-wrap { height: 4px; background: var(--surface2); border-radius: 2px; margin-bottom: 4px; }
+.subject-stat-card .s-bar { height: 4px; border-radius: 2px; transition: width 0.6s cubic-bezier(.16,1,.3,1); }
+.subject-stat-card .s-meta { font-size: 11px; color: var(--text2); }
+.subject-stat-card .s-hours { font-family: 'Gmarket Sans', sans-serif; font-size: 22px; font-weight: 500; }
+
+.day-dist {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+.day-bars {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 100px;
+  margin-bottom: 8px;
+}
+.day-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.day-bar-outer { width: 100%; flex: 1; background: var(--surface2); border-radius: 4px; display: flex; align-items: flex-end; overflow: hidden; }
+.day-bar-inner { width: 100%; border-radius: 4px; transition: height 0.6s cubic-bezier(.16,1,.3,1); min-height: 0; }
+.day-bar-label { font-size: 11px; color: var(--text3); font-weight: 500; }
+.day-bar-value { font-size: 11px; color: var(--text2); font-family: 'Gmarket Sans', sans-serif; }
+
+/* ── Entry List ── */
+.entry-list-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.entry-list-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.entry-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  animation: fadeRight 0.25s ease both;
+  transition: background 0.15s;
+}
+.entry-item:last-child { border-bottom: none; }
+.entry-item:hover { background: var(--surface2); }
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.entry-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.entry-info { flex: 1; min-width: 0; }
+.entry-name { font-size: 14px; font-weight: 500; }
+.entry-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.entry-cost { font-size: 14px; font-weight: 700; color: var(--col1d); white-space: nowrap; }
+.entry-hours { font-size: 12px; color: var(--text3); text-align: right; margin-right: 8px; white-space: nowrap; }
+.btn-del {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.btn-del:hover { background: var(--col2l); color: var(--col2d); border-color: var(--col2); }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text3);
+  font-size: 14px;
+  line-height: 2;
+}
+.empty-state .emoji { font-size: 36px; display: block; margin-bottom: 8px; }
+
+/* ── Dot colors for entries ── */
+.dot0{background:var(--col0)} .dot1{background:var(--col1)} .dot2{background:var(--col2)}
+.dot3{background:var(--col3)} .dot4{background:var(--col4)} .dot5{background:var(--col5)}
+.dot6{background:var(--col6)} .dot7{background:var(--col7)} .dot8{background:var(--col8)}
+.dot9{background:var(--col9)}
+
+/* Icon bg */
+.ibg0{background:var(--col0l);color:var(--col0d)} .ibg1{background:var(--col1l);color:var(--col1d)}
+.ibg2{background:var(--col2l);color:var(--col2d)} .ibg3{background:var(--col3l);color:var(--col3d)}
+.ibg4{background:var(--col4l);color:var(--col4d)} .ibg5{background:var(--col5l);color:var(--col5d)}
+.ibg6{background:var(--col6l);color:var(--col6d)} .ibg7{background:var(--col7l);color:var(--col7d)}
+.ibg8{background:var(--col8l);color:var(--col8d)} .ibg9{background:var(--col9l);color:var(--col9d)}
+
+/* Bar fill colors */
+.bar0{background:var(--col0)} .bar1{background:var(--col1)} .bar2{background:var(--col2)}
+.bar3{background:var(--col3)} .bar4{background:var(--col4)} .bar5{background:var(--col5)}
+.bar6{background:var(--col6)} .bar7{background:var(--col7)} .bar8{background:var(--col8)}
+.bar9{background:var(--col9)}
+
+/* Day bar colors */
+.dbar-mon{background:#4A90D9} .dbar-tue{background:#27AE60}
+.dbar-wed{background:#E67E22} .dbar-thu{background:#8E44AD} .dbar-fri{background:#E74C3C}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), opacity 0.3s;
+  opacity: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .site-header { flex-direction: column; align-items: flex-start; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .page-wrap { padding: 20px 14px 40px; }
+  .logo { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      아이 <em>시간표</em>
+      <small>학원 & 수업 통합 관리</small>
+    </div>
+    <div class="child-tabs" id="childTabs">
+      <!-- tabs rendered by JS -->
+    </div>
+  </header>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">이번 달 총 비용</div>
+      <div class="stat-value v-purple" id="statCost">₩0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">주간 수업 횟수</div>
+      <div class="stat-value v-teal" id="statCount">0 회</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">주간 총 수업 시간</div>
+      <div class="stat-value v-coral" id="statHours">0 시간</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">등록 학원 수</div>
+      <div class="stat-value v-blue" id="statAcademies">0 곳</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="view-tabs">
+      <button class="view-tab active" data-view="timetable">시간표</button>
+      <button class="view-tab" data-view="stats">과목별 통계</button>
+      <button class="view-tab" data-view="list">목록</button>
+    </div>
+    <button class="btn-add" id="toggleFormBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      수업 추가
+    </button>
+  </div>
+
+  <!-- Form -->
+  <div class="form-panel" id="formPanel">
+    <div class="form-title">새 수업 등록</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>요일</label>
+        <select id="inp-day">
+          <option value="mon">월요일</option>
+          <option value="tue">화요일</option>
+          <option value="wed">수요일</option>
+          <option value="thu">목요일</option>
+          <option value="fri">금요일</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>시작 시간</label>
+        <select id="inp-start">
+          <option value="07:00">07:00</option><option value="08:00">08:00</option>
+          <option value="09:00">09:00</option><option value="10:00">10:00</option>
+          <option value="11:00">11:00</option><option value="12:00">12:00</option>
+          <option value="13:00">13:00</option><option value="14:00">14:00</option>
+          <option value="15:00">15:00</option><option value="16:00" selected>16:00</option>
+          <option value="17:00">17:00</option><option value="18:00">18:00</option>
+          <option value="19:00">19:00</option><option value="20:00">20:00</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>종료 시간</label>
+        <select id="inp-end">
+          <option value="07:00">07:00</option><option value="08:00">08:00</option>
+          <option value="09:00">09:00</option><option value="10:00">10:00</option>
+          <option value="11:00">11:00</option><option value="12:00">12:00</option>
+          <option value="13:00">13:00</option><option value="14:00">14:00</option>
+          <option value="15:00">15:00</option><option value="16:00">16:00</option>
+          <option value="17:00">17:00</option><option value="18:00" selected>18:00</option>
+          <option value="19:00">19:00</option><option value="20:00">20:00</option>
+          <option value="21:00">21:00</option><option value="22:00">22:00</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>학원명</label>
+        <input type="text" id="inp-academy" placeholder="예: 폴리영어">
+      </div>
+      <div class="form-field">
+        <label>과목</label>
+        <input type="text" id="inp-subject" placeholder="예: 영어">
+      </div>
+      <div class="form-field">
+        <label>월 비용 (원)</label>
+        <input type="number" id="inp-cost" placeholder="예: 350000" min="0">
+      </div>
+      <div class="form-field">
+        <label>🚗 이동시간 (분, 선택)</label>
+        <input type="number" id="inp-transit" placeholder="예: 20" min="0" max="120">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" id="addBtn">등록하기</button>
+      <button class="btn" id="cancelBtn">취소</button>
+    </div>
+  </div>
+
+  <!-- Timetable View -->
+  <div id="view-timetable">
+    <div class="legend">
+      <span class="legend-item"><div class="legend-block solid"></div> 수업</span>
+      <span class="legend-item"><div class="legend-block faded"></div> 이동시간 (수업 전)</span>
+    </div>
+    <div class="timetable-wrap">
+      <table class="tt">
+        <thead>
+          <tr>
+            <th class="time-th"></th>
+            <th><div class="day-label d-mon">월</div></th>
+            <th><div class="day-label d-tue">화</div></th>
+            <th><div class="day-label d-wed">수</div></th>
+            <th><div class="day-label d-thu">목</div></th>
+            <th><div class="day-label d-fri">금</div></th>
+          </tr>
+        </thead>
+        <tbody id="timetableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Stats View -->
+  <div id="view-stats" class="stats-view">
+    <div class="stats-section-title" style="margin-bottom:14px">과목별 주간 수업 시간</div>
+    <div class="subject-stats" id="subjectStats"></div>
+    <div class="stats-section-title" style="margin-bottom:14px">요일별 수업 시간 분포</div>
+    <div class="day-dist">
+      <div class="day-bars" id="dayBars"></div>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div id="view-list" style="display:none">
+    <div class="entry-list-wrap">
+      <div class="entry-list-header">
+        <span>전체 수업 목록</span>
+        <span id="listCount" style="color:var(--text3);font-size:12px"></span>
+      </div>
+      <div id="entryList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Data ──
+const HOURS = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00',
+               '14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+const DAYS  = ['mon','tue','wed','thu','fri'];
+const DAY_LABEL = {mon:'월',tue:'화',wed:'수',thu:'목',fri:'금'};
+const DAY_CLS   = {mon:'d-mon',tue:'d-tue',wed:'d-wed',thu:'d-thu',fri:'d-fri'};
+const DAY_BAR   = {mon:'dbar-mon',tue:'dbar-tue',wed:'dbar-wed',thu:'dbar-thu',fri:'dbar-fri'};
+const NUM_COLORS = 10;
+
+// Children config — add more here if needed
+const CHILDREN = ['시우','은우'];
+
+let state = {
+  currentChild: CHILDREN[0],
+  currentView: 'timetable',
+  formOpen: false,
+  data: {}
+};
+CHILDREN.forEach(c => { state.data[c] = []; });
+
+// Color mapping per academy+subject
+const colorMap = {};
+let colorIdx = 0;
+function getColorIdx(key) {
+  if (colorMap[key] === undefined) { colorMap[key] = colorIdx % NUM_COLORS; colorIdx++; }
+  return colorMap[key];
+}
+
+function toMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+function diffHours(s,e) { return (toMin(e)-toMin(s))/60; }
+function fmt(n) { return '₩' + Number(n).toLocaleString('ko-KR'); }
+
+// ── LocalStorage ──
+function save() {
+  try { localStorage.setItem('kidsSchedule_v2', JSON.stringify(state.data)); } catch(e){}
+}
+function load() {
+  try {
+    const d = localStorage.getItem('kidsSchedule_v2');
+    if (d) {
+      const parsed = JSON.parse(d);
+      CHILDREN.forEach(c => { if (parsed[c]) state.data[c] = parsed[c]; });
+    }
+  } catch(e){}
+}
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── Render Child Tabs ──
+function renderTabs() {
+  const wrap = document.getElementById('childTabs');
+  wrap.innerHTML = '';
+  CHILDREN.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'child-tab' + (c === state.currentChild ? ' active' : '');
+    btn.dataset.child = c;
+    btn.innerHTML = `<div class="avatar">${c[0]}</div>${c}`;
+    btn.addEventListener('click', () => {
+      state.currentChild = c;
+      renderAll();
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+// ── Render Stats Row ──
+function renderStatsRow() {
+  const entries = state.data[state.currentChild];
+  const total = entries.reduce((s,e) => s + (Number(e.cost)||0), 0);
+  const hours = entries.reduce((s,e) => s + diffHours(e.start,e.end), 0);
+  const academies = [...new Set(entries.map(e=>e.academy).filter(Boolean))];
+  document.getElementById('statCost').textContent = fmt(total);
+  document.getElementById('statCount').textContent = entries.length + ' 회';
+  document.getElementById('statHours').textContent = hours.toFixed(1) + ' 시간';
+  document.getElementById('statAcademies').textContent = academies.length + ' 곳';
+}
+
+// ── Render Timetable ──
+function renderTimetable() {
+  const entries = state.data[state.currentChild];
+  const body = document.getElementById('timetableBody');
+  body.innerHTML = '';
+
+  // Build all blocks including transit
+  const allBlocks = [];
+  entries.forEach(e => {
+    allBlocks.push({ ...e, isTransit: false });
+    if (e.transit && Number(e.transit) > 0) {
+      const transitMin = Number(e.transit);
+      const sMin = toMin(e.start);
+      const tStartMin = sMin - transitMin;
+      if (tStartMin >= 0) {
+        const tH = String(Math.floor(tStartMin / 60)).padStart(2,'0');
+        const tM = String(tStartMin % 60).padStart(2,'0');
+        allBlocks.push({
+          ...e,
+          start: `${tH}:${tM}`,
+          end: e.start,
+          isTransit: true
+        });
+      }
+    }
+  });
+
+  // Find min/max used hours to trim empty rows
+  let minH = HOURS.length - 1, maxH = 0;
+  allBlocks.forEach(b => {
+    const si = HOURS.findIndex(h => toMin(h) <= toMin(b.start) && (HOURS[HOURS.indexOf(h)+1] === undefined || toMin(HOURS[HOURS.indexOf(h)+1]) > toMin(b.start)));
+    const ei = HOURS.findIndex(h => toMin(h) >= toMin(b.end));
+    const sIdx = HOURS.findIndex(h => toMin(h) <= toMin(b.start));
+    const eIdx = HOURS.findIndex(h => toMin(h) >= toMin(b.end));
+    if (sIdx > -1 && sIdx < minH) minH = sIdx;
+    if (eIdx > -1 && eIdx > maxH) maxH = eIdx;
+  });
+  if (!entries.length) { minH = 5; maxH = 11; }
+
+  const visibleHours = HOURS.slice(minH, maxH + 1);
+
+  visibleHours.forEach(hour => {
+    const tr = document.createElement('tr');
+    const tdT = document.createElement('td');
+    tdT.className = 'time-td';
+    tdT.textContent = hour;
+    tr.appendChild(tdT);
+
+    DAYS.forEach(day => {
+      const td = document.createElement('td');
+      const hMin = toMin(hour);
+      allBlocks.forEach(b => {
+        if (b.day !== day) return;
+        const sMin = toMin(b.start), eMin = toMin(b.end);
+        if (hMin >= sMin && hMin < eMin) {
+          const ci = getColorIdx(b.academy + '_' + b.subject);
+          const block = document.createElement('div');
+          block.className = `class-block cl${ci}${b.isTransit ? ' transit' : ''}`;
+          if (b.isTransit) {
+            block.innerHTML = `<div class="cb-subject"><span class="cb-transit-icon">🚗</span>이동 (${b.transit}분)</div>`;
+          } else {
+            block.innerHTML = `<div class="cb-subject">${b.subject}</div><div class="cb-academy">${b.academy}</div>`;
+          }
+          td.appendChild(block);
+        }
+      });
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+}
+
+// ── Render Subject Stats ──
+function renderSubjectStats() {
+  const entries = state.data[state.currentChild];
+  const wrap = document.getElementById('subjectStats');
+  const dayWrap = document.getElementById('dayBars');
+
+  // Aggregate by subject
+  const subjectMap = {};
+  entries.forEach(e => {
+    const key = e.subject;
+    if (!subjectMap[key]) {
+      subjectMap[key] = { subject: key, academies: new Set(), hours: 0, cost: 0, sessions: 0, colorIdx: getColorIdx(e.academy+'_'+e.subject) };
+    }
+    subjectMap[key].hours += diffHours(e.start, e.end);
+    subjectMap[key].cost += Number(e.cost)||0;
+    subjectMap[key].sessions++;
+    subjectMap[key].academies.add(e.academy);
+  });
+  const subjects = Object.values(subjectMap).sort((a,b) => b.hours - a.hours);
+  const maxHours = subjects.length ? subjects[0].hours : 1;
+
+  wrap.innerHTML = '';
+  if (!subjects.length) {
+    wrap.innerHTML = '<div class="empty-state"><span class="emoji">📊</span>수업을 추가하면 통계가 나타나요</div>';
+  } else {
+    subjects.forEach((s, idx) => {
+      const ci = s.colorIdx;
+      const pct = Math.round((s.hours / maxHours) * 100);
+      const card = document.createElement('div');
+      card.className = 'subject-stat-card';
+      card.style.animationDelay = (idx * 0.06) + 's';
+      card.innerHTML = `
+        <div class="icon ibg${ci}">${s.subject[0]}</div>
+        <div class="info">
+          <div class="s-name">${s.subject}</div>
+          <div class="s-academy">${[...s.academies].join(', ')}</div>
+          <div class="s-bar-wrap"><div class="s-bar bar${ci}" style="width:${pct}%"></div></div>
+          <div class="s-meta">주 ${s.sessions}회 · ${s.cost ? fmt(s.cost)+'/월' : '비용 미등록'}</div>
+        </div>
+        <div class="s-hours">${s.hours.toFixed(1)}<small style="font-size:12px;color:var(--text3)">h</small></div>
+      `;
+      wrap.appendChild(card);
+    });
+  }
+
+  // Day distribution
+  const dayHours = {};
+  DAYS.forEach(d => { dayHours[d] = 0; });
+  entries.forEach(e => { dayHours[e.day] += diffHours(e.start, e.end); });
+  const maxDay = Math.max(...Object.values(dayHours), 1);
+
+  dayWrap.innerHTML = '';
+  DAYS.forEach(day => {
+    const h = dayHours[day];
+    const pct = Math.round((h / maxDay) * 100);
+    const col = document.createElement('div');
+    col.className = 'day-bar-wrap';
+    col.innerHTML = `
+      <div class="day-bar-value">${h > 0 ? h.toFixed(1)+'h' : ''}</div>
+      <div class="day-bar-outer" style="flex:1">
+        <div class="day-bar-inner ${DAY_BAR[day]}" style="height:${pct}%;min-height:${h>0?'4px':'0'}"></div>
+      </div>
+      <div class="day-bar-label">${DAY_LABEL[day]}</div>
+    `;
+    dayWrap.appendChild(col);
+  });
+}
+
+// ── Render List ──
+function renderList() {
+  const entries = state.data[state.currentChild];
+  const list = document.getElementById('entryList');
+  document.getElementById('listCount').textContent = `총 ${entries.length}개`;
+  list.innerHTML = '';
+
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty-state"><span class="emoji">📋</span>아직 등록된 수업이 없어요<br>수업 추가 버튼을 눌러 등록해보세요!</div>';
+    return;
+  }
+
+  const sorted = [...entries].sort((a,b) => DAYS.indexOf(a.day)-DAYS.indexOf(b.day) || toMin(a.start)-toMin(b.start));
+  sorted.forEach((e) => {
+    const origIdx = entries.indexOf(e);
+    const ci = getColorIdx(e.academy+'_'+e.subject);
+    const h = diffHours(e.start, e.end);
+    const item = document.createElement('div');
+    item.className = 'entry-item';
+    item.innerHTML = `
+      <div class="entry-dot dot${ci}"></div>
+      <div class="entry-info">
+        <div class="entry-name">${e.subject} · ${e.academy}</div>
+        <div class="entry-meta">${DAY_LABEL[e.day]}요일 ${e.start} ~ ${e.end}${e.transit && Number(e.transit)>0 ? ` · 🚗 이동 ${e.transit}분` : ''}</div>
+      </div>
+      <div class="entry-hours">${h.toFixed(1)}시간/주</div>
+      <div class="entry-cost">${e.cost ? fmt(e.cost) : '-'}</div>
+      <button class="btn-del" data-idx="${origIdx}">삭제</button>
+    `;
+    list.appendChild(item);
+  });
+
+  list.querySelectorAll('.btn-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      state.data[state.currentChild].splice(idx, 1);
+      save();
+      showToast('수업이 삭제되었어요');
+      renderAll();
+    });
+  });
+}
+
+// ── Switch View ──
+function switchView(v) {
+  state.currentView = v;
+  document.getElementById('view-timetable').style.display = v === 'timetable' ? 'block' : 'none';
+  document.getElementById('view-stats').style.display = v === 'stats' ? 'block' : 'none';
+  document.getElementById('view-list').style.display = v === 'list' ? 'block' : 'none';
+  document.querySelectorAll('.view-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === v);
+  });
+}
+
+// ── Render All ──
+function renderAll() {
+  renderTabs();
+  renderStatsRow();
+  renderTimetable();
+  renderSubjectStats();
+  renderList();
+}
+
+// ── Events ──
+document.querySelectorAll('.view-tab').forEach(btn => {
+  btn.addEventListener('click', () => switchView(btn.dataset.view));
+});
+
+document.getElementById('toggleFormBtn').addEventListener('click', () => {
+  state.formOpen = !state.formOpen;
+  const panel = document.getElementById('formPanel');
+  panel.classList.toggle('open', state.formOpen);
+  document.getElementById('toggleFormBtn').innerHTML = state.formOpen
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 닫기'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 수업 추가';
+});
+
+document.getElementById('cancelBtn').addEventListener('click', () => {
+  state.formOpen = false;
+  document.getElementById('formPanel').classList.remove('open');
+  document.getElementById('toggleFormBtn').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 수업 추가';
+});
+
+document.getElementById('addBtn').addEventListener('click', () => {
+  const day = document.getElementById('inp-day').value;
+  const start = document.getElementById('inp-start').value;
+  const end = document.getElementById('inp-end').value;
+  const academy = document.getElementById('inp-academy').value.trim();
+  const subject = document.getElementById('inp-subject').value.trim();
+  const cost = document.getElementById('inp-cost').value.trim();
+  const transit = document.getElementById('inp-transit').value.trim();
+
+  if (!academy) { showToast('학원명을 입력해주세요'); return; }
+  if (!subject) { showToast('과목을 입력해주세요'); return; }
+  if (toMin(end) <= toMin(start)) { showToast('종료 시간이 시작 시간보다 늦어야 해요'); return; }
+
+  state.data[state.currentChild].push({ day, start, end, academy, subject, cost, transit });
+  save();
+  document.getElementById('inp-academy').value = '';
+  document.getElementById('inp-subject').value = '';
+  document.getElementById('inp-cost').value = '';
+  document.getElementById('inp-transit').value = '';
+  showToast(`${subject} 수업이 추가되었어요!`);
+  renderAll();
+});
+
+// ── Init ──
+load();
+renderAll();
+switchView('timetable');
+</script>
+</body>
+</html>
