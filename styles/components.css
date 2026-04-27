@@ -11,3 +11,16 @@
 .chart-title{font-size:13px;font-weight:700;color:var(--tx2);margin-bottom:8px}
 .chart-box{width:100%;min-height:300px}
 .highcharts-container text{font-family:'Noto Sans KR',sans-serif!important}
+
+/* mobile-friendly statistics cards/charts */
+.chart-card{overflow:hidden}
+.chart-box{min-height:320px}
+@media(max-width:640px){
+  .legend{font-size:11px;gap:8px;padding:7px 9px}
+  .chart-card{padding:12px 10px;border-radius:12px}
+  .chart-box{min-height:280px}
+  .tb .addbtn{width:100%;justify-content:center;text-align:center}
+  .tbL{width:100%}
+  .tabset{flex:1;justify-content:center}
+  .tabbtn{flex:1;padding:7px 8px}
+}

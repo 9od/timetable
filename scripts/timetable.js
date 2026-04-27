@@ -1,5 +1,5 @@
 import { DAY_CLASSES, DAY_LABELS, DAYS, END_MIN, ROW_HEIGHT, SLOT_MIN, START_MIN } from './constants.js';
-import { clamp, minutes, textColor, tint, toHHMM } from './utils.js';
+import { blockBg, blockText, clamp, minutes, transitBg, toHHMM } from './utils.js';
 
 const GRID_ROW_OFFSET = 2;
 const DAY_COL_OFFSET = 2;
@@ -140,9 +140,9 @@ function renderTransit(grid, block) {
   el.className = 'tt-block tt-transit';
   el.style.gridColumn = String(dayCol(block.day));
   el.style.gridRow = `${rowStart(block.clippedStart)} / span ${rowSpan(block.clippedStart, block.clippedEnd)}`;
-  el.style.background = tint(color, '22');
+  el.style.background = transitBg(color);
   el.style.borderLeftColor = color;
-  el.style.color = textColor(color);
+  el.style.color = blockText(color);
   const label = block.phase === 'before' ? '이동(갈 때)' : '이동(올 때)';
   el.innerHTML = `<div class="name">🚗 ${label}</div><div class="meta">${block.academy.name}</div><div class="time">${toHHMM(block.start)}~${toHHMM(block.end)}${block.clipped ? ' <span class="clip-badge">clip</span>' : ''}</div>`;
   grid.appendChild(el);
@@ -162,9 +162,9 @@ function renderAcademyGroup(grid, block, onEditAcademy) {
   block.items.forEach(item => {
     const el = document.createElement('div');
     el.className = 'tt-block tt-subblock';
-    el.style.background = tint(color, '26');
+    el.style.background = blockBg(color);
     el.style.borderLeftColor = color;
-    el.style.color = textColor(color);
+    el.style.color = blockText(color);
 
     const overlapping = block.items
       .filter(other => other.start < item.end && other.end > item.start)
