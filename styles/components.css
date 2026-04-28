@@ -24,3 +24,15 @@
   .tabset{flex:1;justify-content:center}
   .tabbtn{flex:1;padding:7px 8px}
 }
+
+/* ── Data source badge ── */
+.data-source-badge{
+  display:inline-flex;align-items:center;
+  font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;
+  border:1px solid var(--brd2);color:var(--tx3);background:var(--sur2);
+  white-space:nowrap;cursor:default;
+}
+.data-source-badge.src-file   {background:#D0F5EF;color:#006B5A;border-color:#00A98F}
+.data-source-badge.src-default{background:#FBF1CF;color:#7A5A04;border-color:#B8870A}
+.data-source-badge.src-local  {background:#EDE8FF;color:#4330CC;border-color:#6C5CE7}
+.data-source-badge.src-empty  {background:var(--sur2);color:var(--tx3)}

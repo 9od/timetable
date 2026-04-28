@@ -1,48 +1,74 @@
-# 아이 시간표 관리
+# 🎒 아이 시간표
 
-초등학생 자녀의 학교/학원 스케줄과 비용을 관리하는 GitHub Pages용 정적 웹앱입니다.
+초등학생 자녀의 학원 스케줄과 비용을 한눈에 관리하는 웹앱입니다.
 
-## 주요 변경 사항
+## 💾 데이터 저장 방식
 
-- `data/default.json`을 기본 데이터로 사용합니다.
-- 최초 접속 시 `localStorage`에 데이터가 없으면 `data/default.json`을 자동 로드합니다.
-- 이후 수정/저장은 `localStorage`의 `kids_schedule_modular_v1` key에 저장됩니다.
-- 화면 우측 상단의 `JSON 백업` 버튼으로 현재 데이터를 파일로 다운로드할 수 있습니다.
-- 시간표 범위는 09:00~20:00으로 고정됩니다.
-- 범위 밖 블록은 표시 가능한 범위로 클리핑됩니다.
-- 학원별 색상을 사용합니다.
-- 같은 학원 내 연속/겹침 과목은 하나의 큰 블록으로 묶고, 같은 시간대 과목은 가로 분할합니다.
-- 이동시간 입력 시 수업 전/후에 각각 이동시간 블록을 표시합니다.
-- 통계는 학원별이 아니라 과목명 기준으로 합산합니다. 예: 여러 학원의 `영어`는 `영어` 하나로 합산됩니다.
+GitHub Pages는 서버가 없어서 파일을 직접 쓸 수 없습니다.  
+대신 **"💾 저장" 버튼 + GitHub 커밋** 2단계로 영구 저장합니다.
 
-## 데이터 구조
+### 저장 흐름
 
-```text
-data/default.json
-└ data
-  ├ 시우
-  │ ├ school[]
-  │ └ academies[]
-  │   └ subjects[]
-  │     └ sessions[]
-  └ 은우
+```
+앱에서 편집
+    ↓
+"💾 저장" 버튼 클릭
+    ↓
+schedule.json 자동 다운로드 + 브라우저 localStorage 저장
+    ↓
+다운로드된 schedule.json → repo의 data/ 폴더에 복사
+    ↓
+GitHub에 커밋 & 푸시
+    ↓
+다음 방문 때 schedule.json 자동 로드 ✅
 ```
 
-## GitHub Pages 배포
+### 로드 우선순위
 
-1. 이 폴더 전체를 저장소 루트에 업로드합니다.
-2. GitHub 저장소 `Settings → Pages`에서 `main / root`를 선택합니다.
-3. 배포된 주소로 접속합니다.
+| 순서 | 소스 | 배지 색상 |
+|------|------|-----------|
+| 1 | `data/schedule.json` (GitHub 커밋 데이터) | 🟢 초록 |
+| 2 | `data/default.json` (초기 샘플) | 🟡 노랑 |
+| 3 | localStorage (브라우저 로컬) | 🟣 보라 |
+| 4 | 빈 데이터 | 회색 |
 
-## 데이터 유지 방식
+화면 우측 상단 배지로 현재 어디서 로드했는지 확인할 수 있습니다.
 
-- 소스 파일을 수정해서 다시 배포해도 같은 URL이면 브라우저 `localStorage` 데이터가 유지됩니다.
-- URL, 브라우저, PC가 바뀌면 데이터가 다를 수 있으므로 정기적으로 `JSON 백업`을 눌러 보관하세요.
-- 기본 데이터를 바꾸고 싶으면 `data/default.json`을 수정하면 됩니다.
+## 🚀 GitHub Pages 배포
 
+1. https://github.com/9od/timetable 저장소에 파일 업로드
+2. **Settings → Pages → Source: main / (root) → Save**
+3. https://9od.github.io/timetable 접속
 
-## v5 변경사항
+## 📁 파일 구조
 
-- 시간표 표시 시작 시간을 12:00으로 조정했습니다.
-- 학교 일정은 데이터에 유지하되, 12:00 이후 구간만 클리핑 표시합니다.
-- 모바일에서 월~금 5개 요일이 한 화면에 들어오도록 시간표 그리드 폭을 재조정했습니다.
+```
+timetable/
+├── index.html
+├── data/
+│   ├── schedule.json   ← 💾 저장 버튼으로 생성되는 파일 (여기에 커밋)
+│   └── default.json    ← 초기 샘플 데이터
+├── scripts/
+│   ├── app.js
+│   ├── store.js        ← 저장/로드 로직
+│   ├── timetable.js
+│   ├── modals.js
+│   ├── stats.js
+│   ├── list.js
+│   ├── ui.js
+│   ├── utils.js
+│   └── constants.js
+└── styles/
+    ├── base.css
+    ├── layout.css
+    ├── components.css
+    ├── timetable.css
+    └── modal.css
+```
+
+## 아이 추가
+
+`scripts/constants.js`에서:
+```js
+export const CHILDREN = ['시우', '은우', '새아이'];
+```
