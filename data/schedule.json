@@ -1,0 +1,492 @@
+{
+  "data": {
+    "시우": {
+      "school": [
+        {
+          "id": "school_moh9icj2_433ntr",
+          "day": "mon",
+          "name": "학교",
+          "start": "09:00",
+          "end": "13:30",
+          "enabled": true
+        },
+        {
+          "id": "school_moh9icj2_1sxfho",
+          "day": "tue",
+          "name": "학교",
+          "start": "09:00",
+          "end": "14:30",
+          "enabled": true
+        },
+        {
+          "id": "school_moh9icj2_hkkmrd",
+          "day": "wed",
+          "name": "학교",
+          "start": "09:00",
+          "end": "13:30",
+          "enabled": true
+        },
+        {
+          "id": "school_moh9icj2_dmc7js",
+          "day": "thu",
+          "name": "학교",
+          "start": "09:00",
+          "end": "14:30",
+          "enabled": true
+        },
+        {
+          "id": "school_moh9icj2_mij4q1",
+          "day": "fri",
+          "name": "학교",
+          "start": "09:00",
+          "end": "13:00",
+          "enabled": true
+        }
+      ],
+      "academies": [
+        {
+          "id": "academy_moh9knsq_vv4iea",
+          "name": "구몬(국어,과학)",
+          "color": "#6c5ce7",
+          "cost": "109000",
+          "transit": "",
+          "memo": "방문수업",
+          "subjects": [
+            {
+              "id": "subject_moh9im72_hpmuzz",
+              "name": "국어,과학",
+              "sessions": [
+                {
+                  "id": "session_moh9im72_olgjjg",
+                  "day": "mon",
+                  "start": "14:00",
+                  "end": "14:30"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moh9mqx3_dmuinp",
+          "name": "리딩트리",
+          "color": "#00a98f",
+          "cost": "220000",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moh9lbb0_mrcwul",
+              "name": "영어",
+              "sessions": [
+                {
+                  "id": "session_moh9lbb0_pw646n",
+                  "day": "mon",
+                  "start": "15:10",
+                  "end": "16:00"
+                },
+                {
+                  "id": "session_moh9m9y6_ap4eew",
+                  "day": "wed",
+                  "start": "19:10",
+                  "end": "20:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moh9of36_c09hnr",
+          "name": "피아노",
+          "color": "#e05b3a",
+          "cost": "160000",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moh9n5yx_ip089l",
+              "name": "피아노",
+              "sessions": [
+                {
+                  "id": "session_moh9n5yx_pcigc1",
+                  "day": "tue",
+                  "start": "15:30",
+                  "end": "16:30"
+                },
+                {
+                  "id": "session_moh9nyl1_ze03m8",
+                  "day": "wed",
+                  "start": "16:00",
+                  "end": "17:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moh9pzg4_u1tezk",
+          "name": "학교기초프로그램",
+          "color": "#c9348f",
+          "cost": "0",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moh9osm4_qtbo9q",
+              "name": "수학",
+              "sessions": [
+                {
+                  "id": "session_moh9osm4_pvtun6",
+                  "day": "wed",
+                  "start": "14:00",
+                  "end": "15:30"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moh9rdx1_zr0qfq",
+          "name": "미술",
+          "color": "#0875d4",
+          "cost": "150000",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moh9qb4e_jxr701",
+              "name": "미술",
+              "sessions": [
+                {
+                  "id": "session_moh9qb4e_llld1t",
+                  "day": "fri",
+                  "start": "13:10",
+                  "end": "14:30"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moh9trp4_39q1oe",
+          "name": "방과후",
+          "color": "#b8870a",
+          "cost": "0",
+          "transit": "10",
+          "memo": "로봇 준비물",
+          "subjects": [
+            {
+              "id": "subject_moh9rk53_e7zyzx",
+              "name": "로봇과학",
+              "sessions": [
+                {
+                  "id": "session_moh9rk53_wgfmms",
+                  "day": "thu",
+                  "start": "15:20",
+                  "end": "16:40"
+                }
+              ]
+            },
+            {
+              "id": "subject_moh9scsa_9mhy3q",
+              "name": "컴퓨터",
+              "sessions": [
+                {
+                  "id": "session_moh9scsa_c23xvr",
+                  "day": "fri",
+                  "start": "14:30",
+                  "end": "16:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moh9vcqx_j8ewwv",
+          "name": "토크스테이션",
+          "color": "#0f8a7a",
+          "cost": "100000",
+          "transit": "",
+          "memo": "화상",
+          "subjects": [
+            {
+              "id": "subject_moh9u1uc_xisv0n",
+              "name": "영어",
+              "sessions": [
+                {
+                  "id": "session_moh9u1uc_k4qa02",
+                  "day": "tue",
+                  "start": "17:30",
+                  "end": "18:00"
+                },
+                {
+                  "id": "session_moh9uox1_07mt2y",
+                  "day": "thu",
+                  "start": "17:30",
+                  "end": "18:00"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "은우": {
+      "school": [
+        {
+          "id": "school_moimtq6x_7017fa",
+          "day": "mon",
+          "name": "학교",
+          "start": "09:00",
+          "end": "12:50",
+          "enabled": true
+        },
+        {
+          "id": "school_moimtq6x_zph8r5",
+          "day": "tue",
+          "name": "학교",
+          "start": "09:00",
+          "end": "13:40",
+          "enabled": true
+        },
+        {
+          "id": "school_moimtq6x_dzaukx",
+          "day": "wed",
+          "name": "학교",
+          "start": "09:00",
+          "end": "13:40",
+          "enabled": true
+        },
+        {
+          "id": "school_moimtq6x_kz1thp",
+          "day": "thu",
+          "name": "학교",
+          "start": "09:00",
+          "end": "13:40",
+          "enabled": true
+        },
+        {
+          "id": "school_moimtq6x_0r1s54",
+          "day": "fri",
+          "name": "학교",
+          "start": "09:00",
+          "end": "12:50",
+          "enabled": true
+        }
+      ],
+      "academies": [
+        {
+          "id": "academy_moimuz0w_dd99zi",
+          "name": "구몬(국어,한자)",
+          "color": "#6c5ce7",
+          "cost": "100000",
+          "transit": "",
+          "memo": "방문수업",
+          "subjects": [
+            {
+              "id": "subject_moimu32b_7r2hz0",
+              "name": "국어,한자",
+              "sessions": [
+                {
+                  "id": "session_moimu32b_ooj0os",
+                  "day": "mon",
+                  "start": "13:30",
+                  "end": "14:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moimw9h8_4ifypq",
+          "name": "리딩트리",
+          "color": "#00a98f",
+          "cost": "330000",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moimv7bs_xmgpti",
+              "name": "영어",
+              "sessions": [
+                {
+                  "id": "session_moimv7bs_w4r8y6",
+                  "day": "mon",
+                  "start": "15:10",
+                  "end": "16:00"
+                },
+                {
+                  "id": "session_moimvoxm_xabglz",
+                  "day": "wed",
+                  "start": "15:10",
+                  "end": "16:00"
+                },
+                {
+                  "id": "session_moimvzyd_4frccv",
+                  "day": "fri",
+                  "start": "18:00",
+                  "end": "19:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moimxkkb_fbavqr",
+          "name": "방과후",
+          "color": "#e05b3a",
+          "cost": "0",
+          "transit": "",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moimwgcb_qwisrn",
+              "name": "컴퓨터",
+              "sessions": [
+                {
+                  "id": "session_moimwgcb_q58qf9",
+                  "day": "tue",
+                  "start": "13:40",
+                  "end": "15:10"
+                }
+              ]
+            },
+            {
+              "id": "subject_moimx6z3_xgor7v",
+              "name": "요리",
+              "sessions": [
+                {
+                  "id": "session_moimx6z3_w8mlnd",
+                  "day": "thu",
+                  "start": "13:40",
+                  "end": "15:10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moimyyfe_4kmwl0",
+          "name": "줄넘기",
+          "color": "#c9348f",
+          "cost": "120000",
+          "transit": "5",
+          "memo": "줄넘기",
+          "subjects": [
+            {
+              "id": "subject_moimxnvn_x2qr9m",
+              "name": "운동",
+              "sessions": [
+                {
+                  "id": "session_moimxnvn_1mvpt4",
+                  "day": "wed",
+                  "start": "14:00",
+                  "end": "15:00"
+                },
+                {
+                  "id": "session_moimyqmv_owwyj8",
+                  "day": "fri",
+                  "start": "14:00",
+                  "end": "15:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moin06ze_cwrl7l",
+          "name": "미술",
+          "color": "#0875d4",
+          "cost": "150000",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moimzaze_3wp7fj",
+              "name": "미술",
+              "sessions": [
+                {
+                  "id": "session_moimzaze_864z01",
+                  "day": "tue",
+                  "start": "15:40",
+                  "end": "17:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moin165u_o8di8a",
+          "name": "축구",
+          "color": "#b8870a",
+          "cost": "100000",
+          "transit": "10",
+          "memo": "셔틀",
+          "subjects": [
+            {
+              "id": "subject_moin0f21_b1vj91",
+              "name": "운동",
+              "sessions": [
+                {
+                  "id": "session_moin0f21_qmpkca",
+                  "day": "mon",
+                  "start": "18:10",
+                  "end": "19:20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moin1zir_wglpas",
+          "name": "보카",
+          "color": "#0f8a7a",
+          "cost": "200000",
+          "transit": "0",
+          "memo": "화상",
+          "subjects": [
+            {
+              "id": "subject_moin1ah7_iwjjvi",
+              "name": "영어",
+              "sessions": [
+                {
+                  "id": "session_moin1ah7_txc9di",
+                  "day": "thu",
+                  "start": "19:00",
+                  "end": "20:00"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moin30q0_qj4noa",
+          "name": "토크스테이션",
+          "color": "#a8265c",
+          "cost": "100000",
+          "transit": "0",
+          "memo": "화상",
+          "subjects": [
+            {
+              "id": "subject_moin24mr_lihmsz",
+              "name": "영어",
+              "sessions": [
+                {
+                  "id": "session_moin24mr_00pmcr",
+                  "day": "tue",
+                  "start": "20:00",
+                  "end": "20:30"
+                },
+                {
+                  "id": "session_moin2i8y_l9mrpi",
+                  "day": "thu",
+                  "start": "20:00",
+                  "end": "20:30"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
