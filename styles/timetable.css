@@ -150,3 +150,53 @@
   .tt-block .meta{font-size:7px}
   .tt-block .time{font-size:6.5px}
 }
+
+/* ── Now line ── */
+.now-line {
+  position: relative;
+  pointer-events: none;
+  z-index: 30;
+  /* 1px 빨간 선을 rowSpan 없이 자체 높이로 표현 */
+  height: 0;
+  border-top: 2px solid #EF4444;
+  margin-top: 0;
+}
+.now-line::before {
+  content: '';
+  position: absolute;
+  left: 52px; /* time col width */
+  top: -5px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #EF4444;
+}
+
+.now-dot {
+  position: relative;
+  pointer-events: none;
+  z-index: 31;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* ── Today column highlight ── */
+.tt-day.today {
+  color: #EF4444 !important;
+  font-weight: 800;
+  position: relative;
+}
+.today-badge {
+  display: inline-block;
+  font-size: 9px;
+  background: #EF4444;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 8px;
+  margin-left: 4px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.slot-cell.today-col {
+  background: rgba(239,68,68,.03);
+}

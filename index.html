@@ -39,6 +39,7 @@
         </div>
       </div>
       <span id="dataSourceBadge" class="data-source-badge"></span>
+      <button class="addbtn now-btn" id="nowButton">⏱ Now</button>
       <button class="addbtn secondary" id="saveButton">💾 저장</button>
       <button class="addbtn" id="addButton">+ 추가</button>
     </section>
@@ -117,6 +118,17 @@
           <button class="btn" data-close="schoolModal">취소</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Now Modal -->
+  <div class="overlay" id="nowModal" aria-hidden="true">
+    <div class="modal" style="max-width:420px">
+      <div class="mhdr">
+        <div class="mtitle" id="nowModalTitle">⏱ 지금 뭐하고 있어?</div>
+        <button class="mclose" data-close="nowModal">✕</button>
+      </div>
+      <div class="mbody" id="nowModalBody"></div>
     </div>
   </div>
 

@@ -36,3 +36,49 @@
 .data-source-badge.src-default{background:#FBF1CF;color:#7A5A04;border-color:#B8870A}
 .data-source-badge.src-local  {background:#EDE8FF;color:#4330CC;border-color:#6C5CE7}
 .data-source-badge.src-empty  {background:var(--sur2);color:var(--tx3)}
+
+/* ── Now button ── */
+.now-btn {
+  border-color: #EF4444;
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+.now-btn:hover { background: #EF4444; color: #fff; }
+
+/* ── Now modal items ── */
+.now-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--sur2);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.now-item:last-child { margin-bottom: 0; }
+.now-item-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.now-item-info { flex: 1; min-width: 0; }
+.now-item-label {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.now-item-detail {
+  font-size: 11px;
+  color: var(--tx3);
+  margin-top: 2px;
+}
+.now-item-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
