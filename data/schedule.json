@@ -215,13 +215,47 @@
                 {
                   "id": "session_moh9u1uc_k4qa02",
                   "day": "tue",
-                  "start": "17:30",
-                  "end": "18:00"
+                  "start": "20:00",
+                  "end": "20:30"
                 },
                 {
                   "id": "session_moh9uox1_07mt2y",
                   "day": "thu",
-                  "start": "17:30",
+                  "start": "20:00",
+                  "end": "20:30"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "academy_moqyylfd_mmasm8",
+          "name": "이연수학",
+          "color": "#a8265c",
+          "cost": "210000",
+          "transit": "10",
+          "memo": "",
+          "subjects": [
+            {
+              "id": "subject_moqywgd8_cdxmz9",
+              "name": "수학",
+              "sessions": [
+                {
+                  "id": "session_moqywgd8_rmz8qf",
+                  "day": "mon",
+                  "start": "16:30",
+                  "end": "18:00"
+                },
+                {
+                  "id": "session_moqyxc2z_7k46hp",
+                  "day": "tue",
+                  "start": "17:00",
+                  "end": "18:00"
+                },
+                {
+                  "id": "session_moqyxj8d_yxj2dg",
+                  "day": "fri",
+                  "start": "16:30",
                   "end": "18:00"
                 }
               ]
