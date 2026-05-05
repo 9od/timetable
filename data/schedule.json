@@ -204,7 +204,7 @@
           "id": "academy_moh9vcqx_j8ewwv",
           "name": "토크스테이션",
           "color": "#0f8a7a",
-          "cost": "100000",
+          "cost": "110000",
           "transit": "",
           "memo": "화상",
           "subjects": [
@@ -215,14 +215,14 @@
                 {
                   "id": "session_moh9u1uc_k4qa02",
                   "day": "tue",
-                  "start": "20:00",
-                  "end": "20:30"
+                  "start": "17:30",
+                  "end": "18:00"
                 },
                 {
                   "id": "session_moh9uox1_07mt2y",
                   "day": "thu",
-                  "start": "20:00",
-                  "end": "20:30"
+                  "start": "17:30",
+                  "end": "18:00"
                 }
               ]
             }
@@ -248,9 +248,9 @@
                 },
                 {
                   "id": "session_moqyxc2z_7k46hp",
-                  "day": "tue",
-                  "start": "17:00",
-                  "end": "18:00"
+                  "day": "wed",
+                  "start": "17:30",
+                  "end": "18:30"
                 },
                 {
                   "id": "session_moqyxj8d_yxj2dg",
